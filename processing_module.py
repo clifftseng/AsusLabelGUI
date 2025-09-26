@@ -1,7 +1,7 @@
 import os
 import shutil
 import datetime
-from processing_modes import mode_pure_chatgpt, mode_chatgpt_with_coords, mode_ocr_with_coords, mode_owlvit
+from processing_modes import mode_pure_chatgpt, mode_chatgpt_with_coords, mode_ocr_with_coords, mode_owlvit, mode_owlvit_then_chatgpt
 from processing_modes import shared_helpers as helpers
 
 def run_processing(selected_options, log_callback, progress_callback):
@@ -34,6 +34,9 @@ def run_processing(selected_options, log_callback, progress_callback):
             excel_modes_selected = True
         if selected_options.get('owl_vit'):
             modes_to_run.append(mode_owlvit)
+        if selected_options.get('owlvit_chatgpt'):
+            modes_to_run.append(mode_owlvit_then_chatgpt)
+            excel_modes_selected = True
 
         if not modes_to_run:
             log_callback("錯誤：沒有選擇任何處理模式。")

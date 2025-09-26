@@ -64,19 +64,13 @@ def execute(log_callback, progress_callback, pdf_path):
         user_content = [{"type": "text", "text": current_user_prompt}]
         user_content.extend([{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img}"}} for img in batch_images])
 
-        # log_callback(f"      - 發送給 LLM 的 user_content (部分): {str(user_content)[:200]}...") # Removed debug log
-        try:
-            response = client.chat.completions.create(
-                model=helpers.AZURE_OPENAI_DEPLOYMENT_NAME,
-                messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_content}],
-                max_tokens=4096, temperature=0.1, top_p=0.95, response_format={"type": "json_object"}
-            )
-            # log_callback(f"      - 收到 LLM 原始回應 (部分): {str(response.choices[0].message.content)[:200]}...") # Removed debug log
-            parsed_json = json.loads(response.choices[0].message.content)
-            # log_callback(f"      - 解析後的 LLM JSON (部分): {str(parsed_json)[:200]}...") # Removed debug log
+        parsed_json = helpers.query_chatgpt_vision_api(
+            system_prompt=system_prompt,
+            user_content=user_content,
+            log_callback=log_callback
+        )
+        if parsed_json:
             all_json_results.append(parsed_json)
-        except Exception as e:
-            log_callback(f"    [錯誤] AI API 呼叫失敗: {e}")
 
     if not all_json_results:
         log_callback(f"  [警告] AI 未對 '{filename}' 返回任何有效結果。")

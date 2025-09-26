@@ -117,6 +117,27 @@ def read_prompt_file(file_path):
     except FileNotFoundError:
         return None
 
+def query_chatgpt_vision_api(system_prompt, user_content, log_callback):
+    """Sends a request to the Azure OpenAI Vision API and returns the parsed JSON response."""
+    try:
+        client = get_azure_openai_client()
+        response = client.chat.completions.create(
+            model=AZURE_OPENAI_DEPLOYMENT_NAME,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content}
+            ],
+            max_tokens=4096,
+            temperature=0.1,
+            top_p=0.95,
+            response_format={"type": "json_object"}
+        )
+        log_callback(f"      - AI 回應接收成功。")
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        log_callback(f"    [錯誤] AI API 呼叫或解析失敗: {e}")
+        return None
+
 # --- Excel Helper Functions ---
 def get_display_value(data_dict):
     """Gets the value to display in Excel, prioritizing value, then derived_value."""

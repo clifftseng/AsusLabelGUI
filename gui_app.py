@@ -15,6 +15,7 @@ class ToolGUI(tk.Tk):
         self.option_chatgpt_pos = tk.BooleanVar(value=False)
         self.option_ocr_pos = tk.BooleanVar(value=False)
         self.option_owl_vit = tk.BooleanVar(value=False) # New OWL-ViT option
+        self.option_owlvit_chatgpt = tk.BooleanVar(value=False) # New Combo Mode
         self.result_file_path = None
 
         # --- Layout ---
@@ -46,6 +47,7 @@ class ToolGUI(tk.Tk):
         ttk.Checkbutton(options_frame, text="ChatGPT + 座標", variable=self.option_chatgpt_pos).grid(row=0, column=1, padx=5, pady=2, sticky="w")
         ttk.Checkbutton(options_frame, text="OCR + 座標", variable=self.option_ocr_pos).grid(row=0, column=2, padx=5, pady=2, sticky="w")
         ttk.Checkbutton(options_frame, text="OWL-ViT", variable=self.option_owl_vit).grid(row=0, column=3, padx=5, pady=2, sticky="w") # New OWL-ViT Checkbutton
+        ttk.Checkbutton(options_frame, text="OWL-ViT + ChatGPT", variable=self.option_owlvit_chatgpt).grid(row=1, column=0, padx=5, pady=2, sticky="w") # New Combo Checkbutton
 
         # 4. 文字訊息Log區
         log_frame = ttk.LabelFrame(self, text="4. Log訊息區", padding=(10, 5))
@@ -153,7 +155,8 @@ class ToolGUI(tk.Tk):
                 'chatgpt_only': self.option_chatgpt_only.get(),
                 'chatgpt_pos': self.option_chatgpt_pos.get(),
                 'ocr_pos': self.option_ocr_pos.get(),
-                'owl_vit': self.option_owl_vit.get()
+                'owl_vit': self.option_owl_vit.get(),
+                'owlvit_chatgpt': self.option_owlvit_chatgpt.get()
             }
             self.log_message(f"選擇的選項: {selected_options}")
             

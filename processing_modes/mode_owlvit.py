@@ -116,9 +116,19 @@ def run_owlvit_on_page(
 
 def save_crops(image: Image.Image, detections: List[Dict[str, Any]], output_dir: Path, page_idx: int, result_threshold: float = 0.9):
     img_w, img_h = image.size
+    page_area = img_w * img_h
+
     for i, det in enumerate(detections):
         box = det["bbox_xyxy"]
         score = det["score"]
+
+        # Check if the bounding box is too large (e.g., >90% of the page area)
+        box_w = box[2] - box[0]
+        box_h = box[3] - box[1]
+        box_area = box_w * box_h
+        if box_area / page_area > 0.9:
+            logging.info(f"Skipping oversized detection on page {page_idx} (area: {box_area/page_area:.2%})")
+            continue
         
         crop_box = (max(0, int(box[0]) - 2), max(0, int(box[1]) - 2), min(img_w, int(box[2]) + 2), min(img_h, int(box[3]) + 2))
         if crop_box[0] >= crop_box[2] or crop_box[1] >= crop_box[3]:
