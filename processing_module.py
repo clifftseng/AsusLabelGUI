@@ -48,41 +48,24 @@ def run_processing(selected_options, log_callback, progress_callback):
             base_progress = (i / num_modes) * 100
             progress_per_mode = 100 / num_modes
 
-            def mode_progress_handler(sub_percentage):
-                """Wraps the main progress callback to scale sub-progress."""
-                overall_progress = base_progress + (sub_percentage / 100 * progress_per_mode)
-                progress_callback(overall_progress)
+            log_callback(f"--- 執行模式: {mode_module.__name__.split('.')[-1]} ---")
+            for j, filename in enumerate(pdf_files):
+                file_base_progress = base_progress + (j / len(pdf_files)) * progress_per_mode
+                def file_progress_handler(sub_percentage):
+                    overall_file_progress = file_base_progress + (sub_percentage / 100 * (progress_per_mode / len(pdf_files)))
+                    progress_callback(overall_file_progress)
 
-            if mode_module == mode_pure_chatgpt:
-                log_callback(f"--- 執行模式: 純ChatGPT ---")
-                for j, filename in enumerate(pdf_files):
-                    file_base_progress = base_progress + (j / len(pdf_files)) * progress_per_mode
-                    def file_progress_handler(sub_percentage):
-                        overall_file_progress = file_base_progress + (sub_percentage / 100 * (progress_per_mode / len(pdf_files)))
-                        progress_callback(overall_file_progress)
-
-                    pdf_full_path = os.path.join(helpers.USER_INPUT_DIR, filename)
-                    processed_data_for_file = mode_module.execute(
-                        log_callback=log_callback,
-                        progress_callback=file_progress_handler,
-                        pdf_path=pdf_full_path
-                    )
-                    if processed_data_for_file:
-                        # save_to_excel expects a dict with 'processed_data' and 'file_name'
-                        helpers.save_to_excel(processed_data_for_file, helpers.EXCEL_OUTPUT_DIR, processed_data_for_file['file_name'], log_callback)
-                        # all_processed_results.append(processed_data_for_file) # Collect for potential future use
-                        base_filename = os.path.splitext(processed_data_for_file['file_name'])[0]
-                        result_file_path = os.path.join(helpers.EXCEL_OUTPUT_DIR, f"single_{base_filename}.xlsx") # Update last saved path
-            else:
-                # For other modes, assume they still process all files and return a single path
-                log_callback(f"--- 執行模式: {mode_module.__name__.split('.')[-1]} ---")
-                result = mode_module.execute(
-                    log_callback=log_callback, 
-                    progress_callback=mode_progress_handler, 
-                    files=pdf_files
+                pdf_full_path = os.path.join(helpers.USER_INPUT_DIR, filename)
+                processed_data_for_file = mode_module.execute(
+                    log_callback=log_callback,
+                    progress_callback=file_progress_handler,
+                    pdf_path=pdf_full_path
                 )
-                if result:
-                    result_file_path = result # This will be the path to the total Excel for these modes
+                if processed_data_for_file:
+                    # save_to_excel expects a dict with 'processed_data' and 'file_name'
+                    helpers.save_to_excel(processed_data_for_file, helpers.EXCEL_OUTPUT_DIR, processed_data_for_file['file_name'], log_callback)
+                    base_filename = os.path.splitext(processed_data_for_file['file_name'])[0]
+                    result_file_path = os.path.join(helpers.EXCEL_OUTPUT_DIR, f"single_{base_filename}.xlsx") # Update last saved path
         
         # After all modes have run, if any processing occurred (i.e., pdf_files was not empty),
         # rename the aggregated total.xlsx with a timestamp and return its path.
