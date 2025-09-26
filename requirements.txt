@@ -4,3 +4,10 @@ python-dotenv
 PyMuPDF
 openpyxl
 Pillow
+torch
+torchvision
+transformers
+opencv-python-headless
+numpy<2.0,>=1.21.0
+tqdm
+pycocotools

@@ -1,0 +1,9 @@
+torch
+torchvision
+transformers
+opencv-python-headless
+Pillow
+numpy<2.0,>=1.21.0
+tqdm
+PyMuPDF
+pycocotools
