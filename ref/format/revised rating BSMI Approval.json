@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 3903,
+  "height": 5523,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 1,
+      "bbox": [
+        457,
+        1755,
+        1174,
+        161
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 1,
+      "bbox": [
+        429,
+        3089,
+        2554,
+        219
+      ]
+    }
+  ],
+  "spec_name": "revised rating BSMI Approval.md"
+}

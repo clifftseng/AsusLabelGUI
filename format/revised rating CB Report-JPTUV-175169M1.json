@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1653,
+  "height": 2337,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 2,
+      "bbox": [
+        742,
+        387,
+        190,
+        37
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 2,
+      "bbox": [
+        738,
+        421,
+        730,
+        68
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 2,
+      "bbox": [
+        745,
+        428,
+        718,
+        51
+      ]
+    },
+    {
+      "field": "typ_capacity_mah",
+      "page": 2,
+      "bbox": [
+        740,
+        431,
+        728,
+        58
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 2,
+      "bbox": [
+        740,
+        428,
+        728,
+        61
+      ]
+    }
+  ],
+  "spec_name": "revised rating CB Report-JPTUV-175169M1.md"
+}

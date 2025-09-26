@@ -1,0 +1,90 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 KC Cert.pdf",
+        "category": "KC Cert",
+        "page_count": 10
+    },
+    "language": "ko",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Basic Model",
+                "quote": "기본모델명 : C41N2503"
+            },
+            {
+                "page": 3,
+                "loc": "Label section",
+                "quote": "모 델 명(型 号 名): C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6 Vdc",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Rating",
+                "quote": "15.6 Vdc, 3 082 mAh"
+            },
+            {
+                "page": 3,
+                "loc": "Label section",
+                "quote": "정 격 : (額 定) : 15.6V, 3082mAh"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.1,
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "Label section",
+                "quote": "정 격 : (額 定) : 15.6V, 3082mAh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082 mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Rating",
+                "quote": "15.6 Vdc, 3 082 mAh"
+            },
+            {
+                "page": 3,
+                "loc": "Label section",
+                "quote": "정 격 : (額 定) : 15.6V, 3082mAh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.1,
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "Label section",
+                "quote": "정 격 : (額 定) : 15.6V, 3082mAh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "文件主要語言為韓文，含部分英文。典型/正常容量與額定容量未明確區分。依公式 Wh = V × mAh / 1000，由額定電壓 15.6 V 與額定容量 3082 mAh 換算得 48.1 Wh，填入 derived_value。"
+}

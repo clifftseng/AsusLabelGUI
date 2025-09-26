@@ -1,0 +1,62 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 revised rating UL62368+2054 Report.pdf",
+        "category": "revised rating UL62368+2054 Report",
+        "page_count": 64
+    },
+    "language": "en",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "Model C41N2503",
+        "evidence": [
+            {
+                "page": 51,
+                "loc": "Table row text",
+                "quote": "Model C41N2503 with Config. A:"
+            },
+            {
+                "page": 59,
+                "loc": "Battery specification table",
+                "quote": "Simplo / C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 18.0,
+        "raw_value": "18.0",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 59,
+                "loc": "Battery specification table under Charging Voltage (V)",
+                "quote": "Charging Voltage (V) 18.0"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 'revised rating UL62368+2054 Report'。文件中未提供典型或額定容量（mAh/Wh）資訊，故相關欄位為 null。"
+}

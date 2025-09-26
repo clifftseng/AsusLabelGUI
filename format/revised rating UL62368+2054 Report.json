@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1700,
+  "height": 2200,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 1,
+      "bbox": [
+        649,
+        875,
+        179,
+        37
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 1,
+      "bbox": [
+        637,
+        924,
+        529,
+        62
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 1,
+      "bbox": [
+        644,
+        926,
+        520,
+        55
+      ]
+    },
+    {
+      "field": "typ_capacity_mah",
+      "page": 1,
+      "bbox": [
+        642,
+        926,
+        522,
+        53
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 1,
+      "bbox": [
+        644,
+        926,
+        516,
+        55
+      ]
+    }
+  ],
+  "spec_name": "revised rating UL62368+2054 Report.md"
+}

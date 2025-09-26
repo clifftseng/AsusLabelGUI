@@ -1,0 +1,90 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 BSMI Report.pdf",
+        "category": "BSMI Report",
+        "page_count": 27
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "測試項目表格",
+                "quote": "型號規格................................. C41N2503"
+            },
+            {
+                "page": 17,
+                "loc": "8.2.2 模擬外殼在高周圍溫度下之壓力（電池組）試驗表格",
+                "quote": "型號 C41N2503 (配置一)"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6 V",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 5,
+                "loc": "電池組技術參數表",
+                "quote": "標稱電壓 15.6 V"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.04,
+        "evidence": [
+            {
+                "page": 5,
+                "loc": "電池組技術參數表",
+                "quote": "標稱電壓 15.6 V\n額定容量 3082 mAh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082 mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "測試項目表格",
+                "quote": "額定容量: 3082 mAh"
+            },
+            {
+                "page": 5,
+                "loc": "電池組技術參數表",
+                "quote": "額定容量 3082 mAh"
+            },
+            {
+                "page": 22,
+                "loc": "7.3.1 在20°C下之放電性能（額定容量）試驗表格",
+                "quote": "額定容量 (mAh) 3082"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.04,
+        "evidence": [
+            {
+                "page": 5,
+                "loc": "電池組技術參數表",
+                "quote": "標稱電壓 15.6 V\n額定容量 3082 mAh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "文件主要語言為中文。檔名比對命中分類 'BSMI Report'。典型電池容量(Wh)與額定能量(Wh)未直接提供，依公式 Wh = V × mAh / 1000 以標稱電壓15.6 V與額定容量3082 mAh換算得48.04 Wh。"
+}

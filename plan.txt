@@ -1,0 +1,50 @@
+將 ref 目錄中的舊版應用程式核心邏輯，以模組化的方式整合進目前的 gui_app.py。
+
+### 修改計畫 (Modification Plan)
+
+**第一階段：環境準備與檔案遷移 (Environment & File Migration)**
+
+1.  **複製必要目錄**: 將 `ref/prompt` 和 `ref/format` 目錄複製到專案根目錄。
+2.  **複製設定檔**: 將 `ref/.env` 檔案複製到專案根目錄。
+3.  **建立依賴文件**: 根據 `ref/requirements.txt` 的內容，在專案根目錄建立 `requirements.txt`，內容包含:
+    - openai>=1.0.0
+    - httpx>=0.23.0
+    - python-dotenv
+    - PyMuPDF
+    - openpyxl
+    - Pillow
+
+**第二階段：核心邏輯模組化 (Modularize Core Logic)**
+
+1.  **重建 `processing_module.py`**: 移除舊的測試程式碼，將 `ref/app.py` 的完整邏輯移入。
+2.  **遷移與調整**: 
+    - 所有輔助函式、`import` 語句和設定區塊都已移入。
+    - 更新了程式碼中的路徑設定，使其符合新的專案結構（例如使用根目錄下的 `input`, `output` 等）。
+    - 增加了自動從 `ref` 目錄複製 Excel 範本 (`single.xlsx`, `total.xlsx`) 的邏輯，以增強穩健性。
+3.  **建立 GUI 接口**: 
+    - 建立了一個新的統一入口函式 `run_processing(selected_options, log_callback, progress_callback)`。
+    - 改造了原有的 `method_purellm` 和 `method_llm_with_label` 函式，使其接受 `log_callback` 和 `progress_callback` 參數。
+    - 將所有 `print()` 呼叫替換為 `log_callback()`，以便將訊息傳遞到 GUI。
+    - 在處理迴圈中增加了 `progress_callback()` 呼叫，以實現進度條的即時更新。
+
+**第三階段：GUI 與邏輯整合 (GUI & Logic Integration)**
+
+1.  **重寫 `gui_app.py` 的 `processing_logic`**: 
+    - 新增 `update_progress` 方法來安全地更新進度條。
+    - `processing_logic` 現在會收集 GUI 上各選項的狀態。
+    - 呼叫 `processing_module.run_processing()`，並將選項字典、日誌回呼 (`self.log_message`) 和進度回呼 (`self.update_progress`) 傳遞給它。
+    - 移除了舊的、用於生成測試檔案的臨時程式碼。
+
+**第四階段：產出計畫文件 (Documentation)**
+
+1.  將此實施計畫寫入 `plan.txt`。
+
+### 最終檔案結構
+
+- **`gui_app.py`**: (已修改) UI 層，負責與使用者互動並呼叫後端邏輯。
+- **`processing_module.py`**: (已修改) 核心邏輯層，包含所有資料處理、AI 呼叫和檔案生成的功能。
+- **`requirements.txt`**: (已新增) 專案的 Python 依賴項。
+- **`plan.txt`**: (已新增) 本計畫文件。
+- **`prompt/`**: (已複製) 包含 AI 提示的目錄。
+- **`format/`**: (已複製) 包含標籤格式定義的目錄。
+- **`.env`**: (已複製) 包含環境變數（如 API 金鑰）的檔案。

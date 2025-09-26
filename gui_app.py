@@ -96,55 +96,63 @@ class ToolGUI(tk.Tk):
         processing_thread.daemon = True
         processing_thread.start()
 
+    def update_progress(self, percentage):
+        """安全地在主執行緒中更新進度條，直接接收百分比"""
+        def _update():
+            self.progress_bar['value'] = percentage
+        self.after(0, _update)
+
     def processing_logic(self):
-        """主要的處理邏輯"""
+        """主要的處理邏輯，呼叫外部模組"""
         try:
             # --- 1. 初始化 ---
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
             self.log_message("處理程序開始...")
+            self.update_progress(0) # 重設進度條
 
             # --- 2. 檢查並建立資料夾 ---
             self.log_message("正在檢查 'input' 和 'output' 資料夾...")
             input_dir = "input"
-            output_dir = "output"
             if not os.path.exists(input_dir):
                 os.makedirs(input_dir)
                 self.log_message(f"'{input_dir}' 資料夾不存在，已自動建立。")
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-                self.log_message(f"'{output_dir}' 資料夾不存在，已自動建立。")
 
-            # --- 3. 呼叫模組處理 (創建10個檔案) ---
-            num_files_to_create = 10
-            self.log_message(f"正在呼叫處理模組創建 {num_files_to_create} 個檔案...")
-            self.after(0, lambda: self.progress_bar.config(maximum=num_files_to_create, value=0))
+            # --- 3. 收集選項並呼叫模組 ---
+            selected_options = {
+                'chatgpt_only': self.option_chatgpt_only.get(),
+                'chatgpt_pos': self.option_chatgpt_pos.get(),
+                'ocr_pos': self.option_ocr_pos.get()
+            }
+            self.log_message(f"選擇的選項: {selected_options}")
+            
+            # 呼叫重構後的處理模組，並傳入回呼函式
+            processing_module.run_processing(
+                selected_options=selected_options,
+                log_callback=self.log_message,
+                progress_callback=self.update_progress
+            )
 
-            for i in range(num_files_to_create):
-                self.log_message(f"({i+1}/{num_files_to_create}) 正在創建檔案...")
-                success, message = processing_module.create_timestamp_file(output_dir)
-                self.log_message(message)
-
-                if not success:
-                    raise Exception(message) # 如果模組返回失敗，則拋出異常
-
-                # 更新進度條
-                final_i = i + 1
-                self.after(0, lambda: self.progress_bar.config(value=final_i))
-                time.sleep(0.5) # 間隔0.5秒
-
-            # --- 5. 完成 ---
-            self.log_message(f"成功創建 {num_files_to_create} 個檔案！")
+            # --- 4. 完成 ---
+            self.log_message("所有任務已成功完成！")
             self.after(0, lambda: self.result_indicator.config(bg="lightgreen"))
+            self.update_progress(100) # 確保進度條達到100%
 
         except Exception as e:
-            self.log_message(f"發生嚴重錯誤: {e}")
-            self.after(0, lambda: self.result_indicator.config(bg="salmon")) # salmon is a reddish color
+            # 錯誤已由模組內部記錄，這裡只更新UI
+            self.log_message(f"處理過程中發生嚴重錯誤，請查看日誌。詳細資訊: {e}")
+            self.after(0, lambda: self.result_indicator.config(bg="salmon"))
         finally:
-            # --- 6. 重置UI ---
+            # --- 5. 重置UI ---
             self.log_message("處理程序結束。")
             self.after(0, lambda: self.start_button.config(state="normal"))
 
 
+
 if __name__ == "__main__":
-    app = ToolGUI()
-    app.mainloop()
+    try:
+        app = ToolGUI()
+        app.mainloop()
+    except Exception as e:
+        print(f"GUI 啟動時發生錯誤: {e}")
+    finally:
+        input("按 Enter 鍵結束...")

@@ -1,0 +1,62 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 revised rating BSMI Approval.pdf",
+        "category": "revised rating BSMI Approval",
+        "page_count": 1
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "型　　式　C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "型式欄位",
+                "quote": "型　　式　C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": 49.5,
+        "raw_value": "49.5Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "申准原因段落",
+                "quote": "從49Wh修正為49.5Wh"
+            },
+            {
+                "page": 1,
+                "loc": "核准內容段落",
+                "quote": "從49Wh修正為49.5Wh。"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類「revised rating BSMI Approval」。文件僅提供典型電池容量（Wh），未提供額定容量或電壓等資訊。"
+}

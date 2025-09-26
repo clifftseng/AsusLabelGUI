@@ -1,0 +1,69 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 BIS Report.pdf",
+        "category": "BIS Report",
+        "page_count": 53
+    },
+    "language": "en",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 53,
+                "loc": "Attachment-1 Photographs - TOP VIEW label on battery",
+                "quote": "C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6V",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 53,
+                "loc": "Attachment-1 Photographs - TOP VIEW label on battery",
+                "quote": "15.6V"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 49.5,
+        "raw_value": "49.5Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 53,
+                "loc": "Attachment-1 Photographs - TOP VIEW label on battery",
+                "quote": "49.5Wh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": 3174,
+        "raw_value": "3174mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 53,
+                "loc": "Attachment-1 Photographs - TOP VIEW label on battery",
+                "quote": "3174mAh"
+            }
+        ]
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 'BIS Report'。文件主要語言為英文。額定容量與額定能量在文件中未明確標示，故為 null。"
+}

@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1700,
+  "height": 2200,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 1,
+      "bbox": [
+        653,
+        1244,
+        204,
+        78
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 1,
+      "bbox": [
+        660,
+        1013,
+        671,
+        80
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 1,
+      "bbox": [
+        665,
+        1013,
+        674,
+        76
+      ]
+    },
+    {
+      "field": "typ_capacity_mah",
+      "page": 1,
+      "bbox": [
+        660,
+        1011,
+        667,
+        82
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 1,
+      "bbox": [
+        658,
+        1013,
+        690,
+        82
+      ]
+    }
+  ],
+  "spec_name": "revised rating CB Cert-168836M1.md"
+}

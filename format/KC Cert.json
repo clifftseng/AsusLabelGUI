@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1653,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 3,
+      "bbox": [
+        442,
+        1381,
+        324,
+        100
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 3,
+      "bbox": [
+        771,
+        1364,
+        141,
+        68
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 3,
+      "bbox": [
+        903,
+        1372,
+        183,
+        66
+      ]
+    }
+  ],
+  "spec_name": "KC Cert.md"
+}

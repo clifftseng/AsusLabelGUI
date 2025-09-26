@@ -1,0 +1,94 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 CCC Report-1.pdf",
+        "category": "CCC Report-1",
+        "page_count": 17
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "申請型號",
+                "quote": "申请型号: C41N2503"
+            },
+            {
+                "page": 4,
+                "loc": "产品描述报告 / 申请型号规格",
+                "quote": "型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            },
+            {
+                "page": 5,
+                "loc": "样品描述及说明 / 产品标签图",
+                "quote": "MODEL (型號/型号): C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6Vdc",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 4,
+                "loc": "产品描述报告 / 申请型号规格",
+                "quote": "型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            },
+            {
+                "page": 5,
+                "loc": "样品描述及说明 / 受检样品型号及规格",
+                "quote": "受检电池组-锂离子电池组, 型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 4,
+                "loc": "产品描述报告 / 申请型号规格",
+                "quote": "型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            },
+            {
+                "page": 5,
+                "loc": "样品描述及说明 / 受检样品型号及规格",
+                "quote": "受检电池组-锂离子电池组, 型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": 48.1,
+        "raw_value": "48.1Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 4,
+                "loc": "产品描述报告 / 申请型号规格",
+                "quote": "型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            },
+            {
+                "page": 5,
+                "loc": "样品描述及说明 / 受检样品型号及规格",
+                "quote": "受检电池组-锂离子电池组, 型号: C41N2503, 标称电压: 15.6Vdc, 额定容量: 3082mAh, 充电限制电压: 18Vdc, 额定能量: 48.1Wh."
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類字串「CCC Report-1」。文件未提供典型/正常容量與典型/正常電池容量，故相應欄位為 null。"
+}

@@ -1,0 +1,75 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 revised rating BSMI Report.pdf",
+        "category": "revised rating BSMI Report",
+        "page_count": 6
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "測試項目表格",
+                "quote": "型號規格.................................: C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6 Vdc",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "測試項目表格",
+                "quote": "電壓規格.................................: 額定電壓: 15.6 Vdc, 額定容量: 3082 mAh"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 49.5,
+        "raw_value": "49.5Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 5,
+                "loc": "產品描述段落",
+                "quote": "修改中文標籤上標示能量瓦時, 從 49Wh 修正為 49.5Wh, 其餘標籤上標示皆無變動, 經確認後, 無需評估測試。"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082 mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "測試項目表格",
+                "quote": "電壓規格.................................: 額定電壓: 15.6 Vdc, 額定容量: 3082 mAh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.07,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "測試項目表格",
+                "quote": "電壓規格.................................: 額定電壓: 15.6 Vdc, 額定容量: 3082 mAh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "文件主要語言為中文。rated_energy_wh 由額定電壓 15.6 V × 額定容量 3082 mAh / 1000 換算得出，公式：Wh = V × mAh / 1000。"
+}

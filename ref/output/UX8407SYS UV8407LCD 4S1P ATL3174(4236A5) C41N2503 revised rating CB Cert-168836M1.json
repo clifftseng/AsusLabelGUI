@@ -1,0 +1,81 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 revised rating CB Cert-168836M1.pdf",
+        "category": "revised rating CB Cert-168836M1",
+        "page_count": 2
+    },
+    "language": "en",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Model / Type Ref.",
+                "quote": "Model / Type Ref.\nC41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6Vdc",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Ratings and principal characteristics",
+                "quote": "15.6Vdc, 3174mAh/3082mAh/49.5Wh"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 49.5,
+        "raw_value": "49.5Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Ratings and principal characteristics",
+                "quote": "15.6Vdc, 3174mAh/3082mAh/49.5Wh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": 3174,
+        "raw_value": "3174mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Ratings and principal characteristics",
+                "quote": "15.6Vdc, 3174mAh/3082mAh/49.5Wh"
+            }
+        ]
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Ratings and principal characteristics",
+                "quote": "15.6Vdc, 3174mAh/3082mAh/49.5Wh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.1,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Ratings and principal characteristics",
+                "quote": "15.6Vdc, 3174mAh/3082mAh/49.5Wh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類「revised rating CB Cert-168836M1」。文件提供典型容量(3174mAh)與額定容量(3082mAh)，但未直接提供額定能量(Wh)，依公式 Wh = V × mAh / 1000 以額定容量 3082mAh 與正常電壓 15.6V 換算得 48.1Wh。"
+}

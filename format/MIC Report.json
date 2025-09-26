@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 1,
+      "bbox": [
+        730,
+        1035,
+        192,
+        56
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 1,
+      "bbox": [
+        715,
+        1099,
+        577,
+        119
+      ]
+    },
+    {
+      "field": "typ_capacity_mah",
+      "page": 1,
+      "bbox": [
+        722,
+        1099,
+        573,
+        112
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 1,
+      "bbox": [
+        710,
+        1106,
+        592,
+        105
+      ]
+    }
+  ],
+  "spec_name": "MIC Report.md"
+}

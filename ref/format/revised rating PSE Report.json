@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 4,
+      "bbox": [
+        549,
+        541,
+        183,
+        49
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 4,
+      "bbox": [
+        203,
+        597,
+        1089,
+        46
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 4,
+      "bbox": [
+        206,
+        592,
+        1101,
+        51
+      ]
+    },
+    {
+      "field": "typ_capacity_mah",
+      "page": 4,
+      "bbox": [
+        206,
+        585,
+        1126,
+        56
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 4,
+      "bbox": [
+        206,
+        590,
+        1094,
+        54
+      ]
+    }
+  ],
+  "spec_name": "revised rating PSE Report.md"
+}

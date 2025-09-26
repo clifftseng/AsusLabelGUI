@@ -1,0 +1,106 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 revised rating CB Report-JPTUV-175169M1.pdf",
+        "category": "revised rating CB Report-JPTUV-175169M1",
+        "page_count": 8
+    },
+    "language": "en",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 2,
+                "loc": "Model/Type reference field",
+                "quote": "Model/Type reference ....................... : C41N2503"
+            },
+            {
+                "page": 8,
+                "loc": "Type Designation field",
+                "quote": "Type Designation: C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "DC 15.6V",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 2,
+                "loc": "Ratings field",
+                "quote": "Ratings .................................................. : DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            },
+            {
+                "page": 7,
+                "loc": "Description of change(s)",
+                "quote": "from “DC 15.6V, Typical: 3174mAh, 49Wh / Rated: 3082mAh” to “DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh”"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 49.5,
+        "raw_value": "49.5Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 2,
+                "loc": "Ratings field",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            },
+            {
+                "page": 7,
+                "loc": "Description of change(s)",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": 3174,
+        "raw_value": "3174mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 2,
+                "loc": "Ratings field",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            },
+            {
+                "page": 7,
+                "loc": "Description of change(s)",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            }
+        ]
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 2,
+                "loc": "Ratings field",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            },
+            {
+                "page": 7,
+                "loc": "Description of change(s)",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": 48.06,
+        "evidence": [
+            {
+                "page": 2,
+                "loc": "Ratings field",
+                "quote": "DC 15.6V, Typical: 3174mAh, 49.5Wh / Rated: 3082mAh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "文件主要語言為英文。額定能量未直接提供，依公式 Wh = V × mAh / 1000 以額定容量 3082mAh 與正常電壓 15.6V 換算得 48.06Wh。"
+}

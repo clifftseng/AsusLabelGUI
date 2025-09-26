@@ -1,0 +1,51 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 revised rating UL NOA.pdf",
+        "category": "revised rating UL NOA",
+        "page_count": 2
+    },
+    "language": "en",
+    "model_name": {
+        "value": "L24M4P73",
+        "raw_value": "Model L24M4P73",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Project scope paragraph",
+                "quote": "UL/CUL 62368-1 Investigation for Rechargeable Li-ion Battery, Model L24M4P73"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "文件中僅於第1頁 Project scope 段落找到型號 L24M4P73，其餘欄位未提供相關數值。以檔名比對命中分類「revised rating UL NOA」。"
+}
