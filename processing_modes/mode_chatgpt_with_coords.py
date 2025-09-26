@@ -138,19 +138,17 @@ def execute(log_callback, progress_callback, pdf_path):
         user_content_aoai = [{"type": "text", "text": "請根據提供的圖片，提取所有相關資訊，並以 JSON 格式回應。"}]
         user_content_aoai.extend([{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img}"}} for img in base64_images_for_aoai])
         try:
-            log_callback(f"    - 正在向 Azure OpenAI 發送請求 ({len(base64_images_for_aoai)} 張圖片)... ")
+            # log_callback(f"    - 正在向 Azure OpenAI 發送請求 ({len(base64_images_for_aoai)} 張圖片)... ") # Removed debug log
             response = client.chat.completions.create(
                 model=helpers.AZURE_OPENAI_DEPLOYMENT_NAME,
                 messages=[{"role": "system", "content": system_prompt_aoai}, {"role": "user", "content": user_content_aoai}],
                 max_tokens=4096, temperature=0.1, top_p=0.95, response_format={"type": "json_object"}
             )
             aoai_json_response = json.loads(response.choices[0].message.content)
-            log_callback("    - 成功收到 Azure OpenAI 回應。" )
+            # log_callback("    - 成功收到 Azure OpenAI 回應。") # Removed debug log
         except Exception as e:
             log_callback(f"    [錯誤] AI API 呼叫失敗: {e}")
-            return None # Return None on API call failure
-        
-        progress_callback(90) # Indicate 90% progress after OpenAI call
+            return None # Return None on API call failure        progress_callback(90) # Indicate 90% progress after OpenAI call
 
         # Stage 3: Save results (10%)
         log_callback("  [3/3] 儲存結果檔案...")

@@ -52,7 +52,7 @@ def execute(log_callback, progress_callback, pdf_path):
     all_json_results = [] # Initialize here for each file
     num_batches = (len(base64_images) + 49) // 50
     for j in range(num_batches):
-        log_callback(f"    - 發送批次 {j+1}/{num_batches}...")
+        # log_callback(f"    - 發送批次 {j+1}/{num_batches}...") # Removed debug log
         start_index = j * 50
         end_index = start_index + 50
         batch_images = base64_images[start_index:end_index]
@@ -64,16 +64,16 @@ def execute(log_callback, progress_callback, pdf_path):
         user_content = [{"type": "text", "text": current_user_prompt}]
         user_content.extend([{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img}"}} for img in batch_images])
 
-        log_callback(f"      - 發送給 LLM 的 user_content (部分): {str(user_content)[:200]}...")
+        # log_callback(f"      - 發送給 LLM 的 user_content (部分): {str(user_content)[:200]}...") # Removed debug log
         try:
             response = client.chat.completions.create(
                 model=helpers.AZURE_OPENAI_DEPLOYMENT_NAME,
                 messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_content}],
                 max_tokens=4096, temperature=0.1, top_p=0.95, response_format={"type": "json_object"}
             )
-            log_callback(f"      - 收到 LLM 原始回應 (部分): {str(response.choices[0].message.content)[:200]}...")
+            # log_callback(f"      - 收到 LLM 原始回應 (部分): {str(response.choices[0].message.content)[:200]}...") # Removed debug log
             parsed_json = json.loads(response.choices[0].message.content)
-            log_callback(f"      - 解析後的 LLM JSON (部分): {str(parsed_json)[:200]}...")
+            # log_callback(f"      - 解析後的 LLM JSON (部分): {str(parsed_json)[:200]}...") # Removed debug log
             all_json_results.append(parsed_json)
         except Exception as e:
             log_callback(f"    [錯誤] AI API 呼叫失敗: {e}")
