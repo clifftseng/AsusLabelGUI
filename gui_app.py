@@ -61,8 +61,12 @@ class ToolGUI(tk.Tk):
         result_frame.grid_columnconfigure(1, weight=1)
         self.result_indicator = tk.Frame(result_frame, bg="lightgrey", height=30)
         self.result_indicator.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-        self.open_result_button = ttk.Button(result_frame, text="打開結果", command=self.open_result_file, state="disabled")
+        self.open_result_button = ttk.Button(result_frame, text="打開結果", command=self.open_result_file, state="disabled", style="Result.TButton")
         self.open_result_button.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+
+        # Define custom style for the result button
+        self.style = ttk.Style()
+        self.style.configure("Result.TButton", background="lightgrey")
 
         self.log_message("程式已就緒，請按下 '開始處理'。")
 
@@ -124,6 +128,7 @@ class ToolGUI(tk.Tk):
         try:
             # --- 0. 重設UI ---
             self.after(0, lambda: self.open_result_button.config(state="disabled"))
+            self.after(0, lambda: self.style.configure("Result.TButton", background="lightgrey")) # Set to grey
             self.result_file_path = None
             self.log_text.config(state="normal")
             self.log_text.delete('1.0', tk.END)
@@ -158,6 +163,7 @@ class ToolGUI(tk.Tk):
             # --- 4. 完成 ---
             self.log_message("\n所有任務已成功完成！")
             self.after(0, lambda: self.result_indicator.config(bg="lightgreen"))
+            self.after(0, lambda: self.style.configure("Result.TButton", background="lightgreen")) # Set to green
             self.update_progress(100)
             if self.result_file_path:
                 self.after(0, lambda: self.open_result_button.config(state="normal"))
@@ -165,6 +171,7 @@ class ToolGUI(tk.Tk):
         except Exception as e:
             self.log_message(f"處理過程中發生嚴重錯誤，請查看日誌。詳細資訊: {e}")
             self.after(0, lambda: self.result_indicator.config(bg="salmon"))
+            self.after(0, lambda: self.style.configure("Result.TButton", background="salmon")) # Set to red
         finally:
             self.log_message("處理程序結束。")
             self.after(0, lambda: self.start_button.config(state="normal"))

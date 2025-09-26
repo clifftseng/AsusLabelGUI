@@ -142,3 +142,88 @@ def format_conflicts(conflicts_list):
     if not conflicts_list:
         return ""
     return json.dumps(conflicts_list, ensure_ascii=False, indent=2)
+
+def save_to_excel(processed_data_wrapper, output_folder, original_filename, log_callback):
+    """
+    Generates a single Excel report for a processed file and appends its summary to a total Excel report.
+    Args:
+        processed_data_wrapper (dict): A dictionary containing the processed data for a single file.
+                               Expected to have 'processed_data' (list of LLM response dicts) and 'file_name' keys.
+        output_folder (str): The directory where Excel files should be saved.
+        original_filename (str): The original filename (e.g., 'UX8407SYS...BIS Letter.pdf').
+        log_callback (function): Callback function for logging messages.
+    """
+    if not processed_data_wrapper or 'processed_data' not in processed_data_wrapper or not processed_data_wrapper['processed_data']:
+        log_callback(f"[警告] 無法為檔案 {original_filename} 儲存 Excel，因為沒有有效的處理資料。")
+        return
+
+    all_json_results = processed_data_wrapper['processed_data']
+    file_name_without_ext = os.path.splitext(original_filename)[0]
+
+    # Merge all JSON results into a single dictionary
+    merged_data = {}
+    for d in all_json_results:
+        merged_data.update(d)
+    
+    # Ensure 'file' key exists and 'name' is correct
+    if 'file' not in merged_data:
+        merged_data['file'] = {}
+    merged_data['file']['name'] = original_filename
+
+    data = merged_data # Use the merged data for Excel filling
+
+    try:
+        # 1. Generate Single Excel
+        single_output_path = os.path.join(output_folder, f"single_{file_name_without_ext}.xlsx")
+        shutil.copy(SINGLE_TEMPLATE_PATH, single_output_path) # Copy template to new file
+        single_wb = load_workbook(single_output_path)
+        ws = single_wb.active
+
+        ws['B2'] = sanitize_for_excel(data.get('file', {}).get('name', ''))
+        ws['B3'] = sanitize_for_excel(data.get('file', {}).get('category', ''))
+        
+        ws['B4'] = sanitize_for_excel(data.get('model_name', {}).get('value', '無'))
+        ws['C4'] = sanitize_for_excel(format_evidence(data.get('model_name', {}).get('evidence', [])))
+
+        fields_map = {
+            'nominal_voltage_v': ('B5', 'C5'),
+            'typ_batt_capacity_wh': ('B6', 'C6'), 'typ_capacity_mah': ('B7', 'C7'),
+            'rated_capacity_mah': ('B8', 'C8'), 'rated_energy_wh': ('B9', 'C9'),
+        }
+        for key, (val_cell, evi_cell) in fields_map.items():
+            field_data = data.get(key, {})
+            ws[val_cell] = sanitize_for_excel(get_display_value(field_data))
+            ws[evi_cell] = sanitize_for_excel(format_evidence(field_data.get('evidence', [])))
+        
+        ws['B13'] = sanitize_for_excel(data.get('notes', ''))
+        ws['B15'] = sanitize_for_excel(format_conflicts(data.get('conflicts', [])))
+        
+        single_wb.save(single_output_path)
+        log_callback(f"  - 已儲存單一 Excel 檔案: {os.path.basename(single_output_path)}")
+
+        # 2. Append to Total Excel and Save
+        total_output_path = os.path.join(output_folder, "total.xlsx")
+        total_wb = load_workbook(total_output_path)
+        total_ws = total_wb.active
+        
+        # Find the next empty row
+        next_row = total_ws.max_row + 1
+
+        row_data = [\
+            sanitize_for_excel(data.get('file', {}).get('name', '')), \
+            sanitize_for_excel(data.get('file', {}).get('category', '')),\
+            sanitize_for_excel(data.get('model_name', {}).get('value', '')),\
+            sanitize_for_excel(get_display_value(data.get('nominal_voltage_v', {}))),\
+            sanitize_for_excel(get_display_value(data.get('typ_batt_capacity_wh', {}))),\
+            sanitize_for_excel(get_display_value(data.get('typ_capacity_mah', {}))),\
+            sanitize_for_excel(get_display_value(data.get('rated_capacity_mah', {}))),\
+            sanitize_for_excel(get_display_value(data.get('rated_energy_wh', {}))),\
+            sanitize_for_excel(data.get('notes', '')),\
+            sanitize_for_excel(format_conflicts(data.get('conflicts', [])))\
+        ]
+        total_ws.append(row_data)
+        total_wb.save(total_output_path)
+        log_callback(f"  - 已更新並儲存 total.xlsx")
+
+    except Exception as e:
+        log_callback(f"[錯誤] 儲存 Excel 檔案時發生錯誤 ({original_filename}): {e}")
