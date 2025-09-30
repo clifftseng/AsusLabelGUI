@@ -2,6 +2,7 @@ import os
 import shutil
 import json
 from pathlib import Path
+from datetime import datetime
 
 # Import logic from other modes and helpers
 from . import mode_owlvit
@@ -79,12 +80,20 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
             if base64_image:
                 final_user_prompt = user_prompt_template
                 if ocr_content:
-                    final_user_prompt += f"\n\n請根據OCR後的內容「{ocr_content}」，輔助用圖片做辨識，抽取需要的值"
+                    final_user_prompt += f"\n\n請根據OCR後的內容，輔助用圖片做辨識，抽取需要的值，並絕對不會無中生有，一定都是出自OCR的內容。OCR內容如下: 「{ocr_content}」"
 
                 user_content = [
                     {"type": "text", "text": final_user_prompt},
                     {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
                 ]
+
+                # Save user prompt content to a file for debugging
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                prompt_filename = os.path.join(temp_crop_dir, f"chatgpt_prompt_{image_name}_{timestamp}.txt")
+                with open(prompt_filename, "w", encoding="utf-8") as f:
+                    f.write(f"System Prompt:\n{system_prompt}\n\nUser Prompt:\n{final_user_prompt}")
+                log_callback(f"[COMBO] ChatGPT prompt saved to {prompt_filename}")
+
 
                 response_json = helpers.query_chatgpt_vision_api(
                     system_prompt=system_prompt,
