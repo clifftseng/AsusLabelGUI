@@ -3,6 +3,11 @@ from tkinter import ttk, scrolledtext, messagebox
 import os
 import threading
 import time
+import logging
+
+# Suppress verbose logging from Azure SDK & OpenAI
+logging.getLogger("azure.core.pipeline.policies.http_logging_policy").setLevel(logging.WARNING)
+logging.getLogger("openai").setLevel(logging.WARNING)
 
 class ToolGUI(tk.Tk):
     def __init__(self):
@@ -12,6 +17,7 @@ class ToolGUI(tk.Tk):
 
         # --- 變數區 ---
         self.coord_mode = tk.StringVar(value="chatgpt_pos")
+        self.verbose_log = tk.BooleanVar(value=False)
         self.result_file_path = None
 
         # --- Layout ---
@@ -36,11 +42,16 @@ class ToolGUI(tk.Tk):
         self.progress_label = ttk.Label(progress_frame, text="0%")
         self.progress_label.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # 3. 選擇區 (改為 Radiobutton)
-        options_frame = ttk.LabelFrame(self, text="3. 座標擷取模式 (格式檔存在時使用)", padding=(10, 5))
+        # 3. 選擇區
+        options_frame = ttk.LabelFrame(self, text="3. 模式選擇與設定", padding=(10, 5))
         options_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
+        
+        # Row for coord_mode
         ttk.Radiobutton(options_frame, text="ChatGPT + 座標", variable=self.coord_mode, value="chatgpt_pos").grid(row=0, column=0, padx=5, pady=2, sticky="w")
         ttk.Radiobutton(options_frame, text="OCR + 座標 (尚未實作)", variable=self.coord_mode, value="ocr_pos", state="disabled").grid(row=0, column=1, padx=5, pady=2, sticky="w")
+
+        # Row for other settings
+        ttk.Checkbutton(options_frame, text="顯示詳細日誌 (Verbose Log)", variable=self.verbose_log).grid(row=1, column=0, columnspan=2, padx=5, pady=2, sticky="w")
 
         # 4. 文字訊息Log區
         log_frame = ttk.LabelFrame(self, text="4. Log訊息區", padding=(10, 5))
@@ -129,7 +140,8 @@ class ToolGUI(tk.Tk):
                 self.log_message(f"'{input_dir}' 資料夾不存在，已自動建立。")
 
             selected_options = {
-                'coord_mode': self.coord_mode.get()
+                'coord_mode': self.coord_mode.get(),
+                'verbose': self.verbose_log.get()
             }
             
             self.result_file_path = processing_module.run_processing(

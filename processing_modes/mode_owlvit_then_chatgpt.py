@@ -8,7 +8,7 @@ from datetime import datetime
 from . import mode_owlvit
 from . import shared_helpers as helpers
 
-def execute(log_callback, progress_callback, pdf_path, format_path=None):
+def execute(log_callback, progress_callback, pdf_path, format_path=None, verbose=False):
     """
     Orchestrates a multi-stage process:
     1. Run OWL-ViT to generate cropped images.
@@ -30,7 +30,8 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
     mode_owlvit.process(
         file_path=pdf_path,
         output_dir=str(temp_crop_dir),
-        progress_callback=lambda msg: log_callback(f"[OWL-ViT Sub-process] {msg}")
+        progress_callback=lambda msg: log_callback(f"[OWL-ViT Sub-process] {msg}"),
+        verbose=verbose
     )
 
     cropped_images = sorted([f for f in os.listdir(temp_crop_dir) if f.lower().endswith(".jpg")])

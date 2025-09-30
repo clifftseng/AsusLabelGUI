@@ -16,8 +16,15 @@ def get_pdf_page_count(pdf_path):
         print(f"Error opening or reading PDF {pdf_path}: {e}")
         return 0
 
-def process_file_worker(filename, selected_options, available_formats, log_callback, progress_callback, results_queue):
-    """This function runs in a separate thread to process a single PDF file."""
+def process_file_worker(filename, selected_options, available_formats, results_queue):
+    """
+    This function runs in a separate thread to process a single PDF file.
+    It buffers log messages and sends them back with the result.
+    """
+    log_buffer = []
+    def thread_log_callback(msg):
+        log_buffer.append(msg)
+
     try:
         pdf_full_path = os.path.join(helpers.USER_INPUT_DIR, filename)
         
@@ -48,28 +55,29 @@ def process_file_worker(filename, selected_options, available_formats, log_callb
             mode_to_run = mode_pure_chatgpt
             mode_name = "純 ChatGPT (預設)"
 
-        log_callback(f"[執行緒: {filename}] 自動選擇模式: {mode_name}")
+        thread_log_callback(f"--- 開始處理檔案: {filename} ---")
+        thread_log_callback(f"自動選擇模式: {mode_name}")
 
         if mode_to_run:
             format_path_for_mode = os.path.join(helpers.FORMAT_DIR, f"{found_format_name}.json") if found_format_name else None
             
             processed_data_for_file = mode_to_run.execute(
-                log_callback=log_callback,
+                log_callback=thread_log_callback,
                 progress_callback=lambda p: None, # Sub-progress is disabled in multi-threading
                 pdf_path=pdf_full_path,
-                format_path=format_path_for_mode 
+                format_path=format_path_for_mode,
+                verbose=selected_options.get('verbose', False)
             )
-            # Put the result in the queue, even if it's None, to signal completion
-            results_queue.put(processed_data_for_file)
+            results_queue.put((processed_data_for_file, log_buffer))
         else:
-            log_callback(f"[警告][執行緒: {filename}] 找不到適合的處理模式。")
-            results_queue.put(None) # Also signal completion
+            thread_log_callback(f"[警告] 找不到適合的處理模式。")
+            results_queue.put((None, log_buffer))
 
     except Exception as e:
-        log_callback(f"[錯誤][執行緒: {filename}] 處理時發生未預期錯誤: {e}")
+        thread_log_callback(f"[錯誤] 處理時發生未預期錯誤: {e}")
         import traceback
-        log_callback(traceback.format_exc())
-        results_queue.put(None) # Signal completion even on failure
+        thread_log_callback(traceback.format_exc())
+        results_queue.put((None, log_buffer))
 
 def run_processing(selected_options, log_callback, progress_callback):
     try:
@@ -117,23 +125,28 @@ def run_processing(selected_options, log_callback, progress_callback):
         for filename in pdf_files:
             thread = threading.Thread(
                 target=process_file_worker,
-                args=(filename, selected_options, available_formats, log_callback, progress_callback, results_queue)
+                args=(filename, selected_options, available_formats, results_queue)
             )
             threads.append(thread)
             thread.start()
-            log_callback(f"  - 執行緒已啟動: {filename}")
+            log_callback(f"  - 已啟動執行緒來處理: {filename}")
 
         # --- New Progress Monitoring & Result Collection Logic ---
         final_results = []
         total_files = len(pdf_files)
         for i in range(total_files):
-            result = results_queue.get() # This will block until a thread puts a result in the queue
+            result, log_buffer = results_queue.get() # This will block until a thread puts a result in the queue
+            
+            # Print all buffered logs for the completed thread
+            for msg in log_buffer:
+                log_callback(msg)
+            
             if result:
                 final_results.append(result)
             
             progress = ((i + 1) / total_files) * 100
             progress_callback(progress)
-            log_callback(f"[進度] {i + 1}/{total_files} 個檔案處理完成 ({progress:.0f}%)。")
+            log_callback(f"--- {i + 1}/{total_files} 個檔案處理完成 ({progress:.0f}%) ---")
 
         for thread in threads:
             thread.join()

@@ -8,7 +8,7 @@ from openpyxl import load_workbook
 from processing_modes import shared_helpers as helpers
 import shutil
 
-def execute(log_callback, progress_callback, pdf_path, format_path=None):
+def execute(log_callback, progress_callback, pdf_path, format_path=None, verbose=False):
     """Processes a single PDF based on a provided format file, with structured logging."""
     pdf_filename = os.path.basename(pdf_path)
     log_callback(f"======== 開始執行 ChatGPT + 座標模式處理檔案: {pdf_filename} ========")

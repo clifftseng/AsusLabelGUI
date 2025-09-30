@@ -6,7 +6,7 @@ from processing_modes import shared_helpers as helpers
 
 import datetime
 
-def execute(log_callback, progress_callback, pdf_path, format_path=None):
+def execute(log_callback, progress_callback, pdf_path, format_path=None, verbose=False):
     """Processes a single PDF file with structured logging."""
     log_callback(f"======== 開始執行 純ChatGPT 模式處理檔案: {os.path.basename(pdf_path)} ========")
     

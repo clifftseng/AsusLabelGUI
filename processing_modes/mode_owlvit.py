@@ -12,7 +12,7 @@ from . import shared_helpers as helpers
 
 # --- Utility Functions from utils_owlvit.py and pdf_utils.py ---
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def _pytorch_nms(boxes: torch.Tensor, scores: torch.Tensor, iou_threshold: float) -> torch.Tensor:
     if boxes.numel() == 0:
@@ -100,7 +100,7 @@ def run_owlvit_on_page(
 
     return [{"bbox_xyxy": box.cpu().numpy().tolist(), "score": score.cpu().item()} for box, score in zip(final_boxes, final_scores)]
 
-def save_crops(image: Image.Image, detections: List[Dict[str, Any]], output_dir: Path, page_idx: int, result_threshold: float = 0.9):
+def save_crops(image: Image.Image, detections: List[Dict[str, Any]], output_dir: Path, page_idx: int, result_threshold: float = 0.9, verbose: bool = False):
     img_w, img_h = image.size
     page_area = img_w * img_h
 
@@ -113,7 +113,8 @@ def save_crops(image: Image.Image, detections: List[Dict[str, Any]], output_dir:
         box_h = box[3] - box[1]
         box_area = box_w * box_h
         if box_area / page_area > 0.9:
-            logging.info(f"Skipping oversized detection on page {page_idx} (area: {box_area/page_area:.2%})")
+            if verbose:
+                logging.info(f"Skipping oversized detection on page {page_idx} (area: {box_area/page_area:.2%})")
             continue
         
         crop_box = (max(0, int(box[0]) - 2), max(0, int(box[1]) - 2), min(img_w, int(box[2]) + 2), min(img_h, int(box[3]) + 2))
@@ -168,7 +169,7 @@ def pdf_to_images_generator(pdf_path: Path, dpi: int = 200, scale: float = None,
 
 # --- Main Processing Function for GUI ---
 
-def process(file_path: str, output_dir: str, progress_callback=None):
+def process(file_path: str, output_dir: str, progress_callback=None, verbose: bool = False):
     """
     Main processing function for OWL-ViT mode.
     Detects objects in a PDF based on exemplar images and saves crops.
@@ -226,14 +227,16 @@ def process(file_path: str, output_dir: str, progress_callback=None):
             )
 
             if detections:
-                logging.info(f"Found {len(detections)} detections on page {page_idx + 1}.")
+                if verbose:
+                    logging.info(f"Found {len(detections)} detections on page {page_idx + 1}.")
                 # The output directory for crops is the main one provided to the function
                 save_crops(
                     image=page_image,
                     detections=detections,
                     output_dir=output_path,
                     page_idx=page_idx + 1,
-                    result_threshold=0.8 # Hardcoded threshold for saving
+                    result_threshold=0.8, # Hardcoded threshold for saving
+                    verbose=verbose
                 )
         
         if progress_callback:
