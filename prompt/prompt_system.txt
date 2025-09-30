@@ -30,8 +30,10 @@
 7) 頁碼規則：一律以 PDF 實際頁序為準（第一頁=第1頁）。忽略文件內另行標註的頁碼；所有 evidence.page 與 Target Hints 的 page 都以實際頁序計。
 8) 若 Target Hints 指定了座標系（如 units/origin/format），則 evidence.loc 應以同樣座標系回報（例如：bbox(top_left, xywh): [x,y,w,h]）。
 9) 內文引用規則: evidence 中的 quote 欄位必須只包含可列印的字元。從原始文件中複製文字時，必須過濾並移除所有控制字元或非可見字元。
+10) 如果是推論的值，則寫到備註，不得寫入該欄位!
 
 [檔案分類規則] 
+- 如果是單一圖檔且為"電池標籤展開圖"，則category = "Battery Label Artwork"，否則按下面處理
 - 僅依檔名比對，不得從內文推斷或修飾分類名稱。
 - category 自動依檔名偵測。
 - 若檔名中包含下列任一分類字串，則 category = 該字串：

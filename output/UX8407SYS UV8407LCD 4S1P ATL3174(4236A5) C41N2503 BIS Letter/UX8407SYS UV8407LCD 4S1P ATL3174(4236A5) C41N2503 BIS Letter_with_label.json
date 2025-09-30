@@ -8,7 +8,6 @@
     "model_name": {
         "value": "C41N2503",
         "raw_value": "C41N2503",
-        "derived_value": null,
         "evidence": [
             {
                 "page": 1,
@@ -25,33 +24,28 @@
     "nominal_voltage_v": {
         "value": null,
         "raw_value": null,
-        "derived_value": null,
         "evidence": []
     },
     "typ_batt_capacity_wh": {
         "value": null,
         "raw_value": null,
-        "derived_value": null,
         "evidence": []
     },
     "typ_capacity_mah": {
         "value": null,
         "raw_value": null,
-        "derived_value": null,
         "evidence": []
     },
     "rated_capacity_mah": {
         "value": null,
         "raw_value": null,
-        "derived_value": null,
         "evidence": []
     },
     "rated_energy_wh": {
         "value": null,
         "raw_value": null,
-        "derived_value": null,
         "evidence": []
     },
     "conflicts": [],
-    "notes": "頁碼採絕對 1-based。本文件僅提供型號資訊，未提供電壓、容量或能量數據；切圖與 hints 搜尋均未獲其他欄位值。"
+    "notes": "頁碼採絕對 1-based。本文件主要語言為英文。僅 model_name 有切圖與整頁證據，其餘欄位在切圖與 hints 搜尋均未獲值。"
 }

@@ -50,7 +50,7 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
         total_images = len(cropped_images)
 
         # Load prompts once using the correct helper function
-        system_prompt = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_system.txt"))
+        system_prompt = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_system_using_label.txt"))
         user_prompt_template = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_user.txt"))
 
         if not system_prompt or not user_prompt_template:

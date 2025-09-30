@@ -14,7 +14,7 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
     log_callback(f"======== 開始執行 ChatGPT + 座標模式處理檔案: {pdf_filename} ========")
 
     if not format_path or not os.path.exists(format_path):
-        log_callback(f"[錯誤] 未提供有效的格式檔路徑，無法處理檔案 {pdf_filename} ويعتمد على ملف التنسيق المحدد.")
+        log_callback(f"[錯誤] 未提供有效的格式檔路徑，無法處理檔案 {pdf_filename}")
         return None
 
     try:

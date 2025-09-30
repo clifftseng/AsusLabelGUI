@@ -40,7 +40,6 @@ def run_processing(selected_options, log_callback, progress_callback):
         # 1. Pre-load all available format names
         log_callback("正在讀取所有可用的格式檔...")
         available_formats = [os.path.splitext(f)[0] for f in os.listdir(helpers.FORMAT_DIR) if f.lower().endswith('.json')]
-        # Sort by length, longest first, to avoid incorrect partial matches (e.g., "BSMI Report" vs "BSMI")
         available_formats.sort(key=len, reverse=True)
         log_callback(f"找到 {len(available_formats)} 個格式。")
 
@@ -56,12 +55,11 @@ def run_processing(selected_options, log_callback, progress_callback):
             log_callback(f"--- 處理檔案 ({i+1}/{total_files}): {filename} ---")
             pdf_full_path = os.path.join(helpers.USER_INPUT_DIR, filename)
             
-            # --- New "Contains" matching logic ---
             found_format_name = None
             for format_name in available_formats:
                 if format_name in filename:
                     found_format_name = format_name
-                    break # Stop after finding the first (and longest) match
+                    break
 
             format_file_exists = found_format_name is not None
             page_count = get_pdf_page_count(pdf_full_path)
@@ -75,25 +73,24 @@ def run_processing(selected_options, log_callback, progress_callback):
 
             # Determine which mode to run based on the new logic
             if page_count == 1 and not format_file_exists:
-                mode_to_run = mode_owlvit
-                mode_name = "OWL-ViT (單頁且無格式檔)"
+                mode_to_run = mode_owlvit_then_chatgpt # CHANGED: Use the full combo mode
+                mode_name = "OWL-ViT + ChatGPT (單頁且無格式檔)" # CHANGED: Update log message
             elif format_file_exists:
-                # Here, we decide between chatgpt_pos and ocr_pos based on GUI selection
-                coord_mode_selection = selected_options.get('coord_mode', 'chatgpt_pos') # Default to chatgpt_pos
+                coord_mode_selection = selected_options.get('coord_mode', 'chatgpt_pos')
                 if coord_mode_selection == 'ocr_pos':
                     mode_to_run = mode_ocr_with_coords
                     mode_name = "OCR + 座標 (找到格式檔)"
                 else:
                     mode_to_run = mode_chatgpt_with_coords
                     mode_name = "ChatGPT + 座標 (找到格式檔)"
-            else: # Default case for multi-page PDFs without a format file
+            else:
                 mode_to_run = mode_pure_chatgpt
                 mode_name = "純 ChatGPT (預設)"
 
             log_callback(f"自動選擇模式: {mode_name}")
 
             # Execute the chosen mode
-            if mode_to_run == mode_owlvit:
+            if mode_to_run == mode_owlvit: # This block will now likely not be used, but kept for safety
                 base_name = os.path.splitext(filename)[0]
                 file_output_dir = os.path.join(helpers.OUTPUT_DIR, base_name)
                 os.makedirs(file_output_dir, exist_ok=True)
@@ -103,23 +100,20 @@ def run_processing(selected_options, log_callback, progress_callback):
                     progress_callback=log_callback 
                 )
                 file_progress_handler(100)
-            elif mode_to_run: # Assumes it's an Excel-producing mode
+            elif mode_to_run: # All our main modes are now Excel-producing
                 excel_was_generated = True
-                # We need to pass the specific format file path to the execute function
                 format_path_for_mode = os.path.join(helpers.FORMAT_DIR, f"{found_format_name}.json") if found_format_name else None
                 
                 processed_data_for_file = mode_to_run.execute(
                     log_callback=log_callback,
                     progress_callback=file_progress_handler,
                     pdf_path=pdf_full_path,
-                    # Pass the found format file path to modes that need it
                     format_path=format_path_for_mode 
                 )
                 if processed_data_for_file:
                     helpers.save_to_excel(processed_data_for_file, helpers.EXCEL_OUTPUT_DIR, processed_data_for_file['file_name'], log_callback)
             else:
                 log_callback(f"[警告] 找不到適合 {filename} 的處理模式。")
-
 
         # 4. Finalize and return the correct result path
         if excel_was_generated:
