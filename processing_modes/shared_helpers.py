@@ -33,6 +33,45 @@ REF_DIR = os.path.join(BASE_DIR, "ref")
 SINGLE_TEMPLATE_PATH = os.path.join(REF_DIR, "single.xlsx")
 TOTAL_TEMPLATE_PATH = os.path.join(REF_DIR, "total.xlsx")
 
+# --- Model Cache ---
+MODEL_CACHE = {}
+
+def get_device(device_str: str = None):
+    import torch
+    if device_str:
+        return torch.device(device_str)
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+def get_owlvit_model(log_callback=None):
+    """Loads the OWL-ViT model and processor, caching them for future use."""
+    if "owlvit" in MODEL_CACHE:
+        if log_callback: log_callback("  - 從快取中取得 OWL-ViT 模型。")
+        return MODEL_CACHE["owlvit"]
+    
+    if log_callback: log_callback("  - 首次載入 OWL-ViT 模型 (可能需要幾分鐘)...")
+    from transformers import OwlViTProcessor, OwlViTForObjectDetection
+    import torch
+
+    device = get_device()
+    processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
+    model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(device)
+    model.eval()
+    
+    MODEL_CACHE["owlvit"] = (model, processor)
+    if log_callback: log_callback("  - OWL-ViT 模型載入並快取成功。")
+    return model, processor
+
+def preload_models(log_callback=None):
+    """Preloads all necessary AI models into the cache."""
+    if log_callback: log_callback("開始預載入所有 AI 模型...")
+    get_owlvit_model(log_callback)
+    # In the future, other models can be preloaded here
+    if log_callback: log_callback("所有 AI 模型已預載入完成。")
+
 def ensure_template_files_exist(log_callback):
     """Ensures that the necessary Excel template files are copied to the output directory."""
     if not os.path.exists(EXCEL_OUTPUT_DIR):

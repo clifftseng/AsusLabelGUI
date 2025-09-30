@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import os
 import threading
-import processing_module
+# import processing_module # This will be imported locally
 
 class ToolGUI(tk.Tk):
     def __init__(self):
@@ -72,7 +72,14 @@ class ToolGUI(tk.Tk):
         self.style = ttk.Style()
         self.style.configure("Result.TButton", background="lightgrey")
 
-        self.log_message("程式已就緒，請按下 '開始處理'。")
+        # Initial state
+        self.start_button.config(state="disabled")
+        self.log_message("程式介面已啟動，正在背景初始化 AI 模型，請稍候...")
+
+        # Start background initialization
+        init_thread = threading.Thread(target=self.initialize_app)
+        init_thread.daemon = True
+        init_thread.start()
 
     def log_message(self, msg):
         """安全地在主執行緒中更新Log訊息"""
@@ -129,6 +136,7 @@ class ToolGUI(tk.Tk):
 
     def processing_logic(self):
         """主要的處理邏輯，呼叫外部模組"""
+        import processing_module # Local import to speed up GUI startup
         try:
             # --- 0. 重設UI ---
             self.after(0, lambda: self.open_result_button.config(state="disabled"))
@@ -199,6 +207,23 @@ class ToolGUI(tk.Tk):
         else:
             self.log_message("[錯誤] 結果檔案路徑未設定。")
             messagebox.showwarning("找不到檔案", "結果檔案路徑未設定，請先執行處理程序。")
+
+    def initialize_app(self):
+        """在背景執行緒中執行耗時的初始化任務"""
+        try:
+            # This will be the new function to pre-load models
+            from processing_modes import shared_helpers as helpers
+            helpers.preload_models(log_callback=self.log_message)
+        except Exception as e:
+            self.log_message(f"[錯誤] 模型初始化失敗: {e}")
+        finally:
+            # Schedule the UI update on the main thread
+            self.after(0, self.on_initialization_complete)
+
+    def on_initialization_complete(self):
+        """在主執行緒中更新UI，表示初始化已完成"""
+        self.log_message("AI 模型初始化完成，可以開始處理。")
+        self.start_button.config(state="normal")
 
 if __name__ == "__main__":
     app = ToolGUI()

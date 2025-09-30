@@ -8,25 +8,11 @@ from transformers import OwlViTProcessor, OwlViTForObjectDetection
 import fitz  # PyMuPDF
 from typing import List, Dict, Any, Optional, Tuple, Generator
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from . import shared_helpers as helpers
 
 # --- Utility Functions from utils_owlvit.py and pdf_utils.py ---
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def get_device(device_str: str = None) -> torch.device:
-    if device_str:
-        return torch.device(device_str)
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
-
-def load_model(device: torch.device):
-    processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
-    model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(device)
-    model.eval()
-    return model, processor
 
 def _pytorch_nms(boxes: torch.Tensor, scores: torch.Tensor, iou_threshold: float) -> torch.Tensor:
     if boxes.numel() == 0:
@@ -210,11 +196,9 @@ def process(file_path: str, output_dir: str, progress_callback=None):
         return
 
     try:
-        device = get_device()
+        model, processor = helpers.get_owlvit_model(log_callback=progress_callback)
+        device = model.device # Get device from the loaded model
         if progress_callback: progress_callback(f"使用設備: {device}")
-        
-        model, processor = load_model(device)
-        if progress_callback: progress_callback("OWL-ViT 模型載入成功。")
 
         exemplar_images = [Image.open(p).convert("RGB") for p in exemplar_paths]
         if progress_callback: progress_callback(f"已載入 {len(exemplar_images)} 張範例圖片。")

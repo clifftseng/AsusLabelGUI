@@ -11,7 +11,12 @@ def run_processing(selected_options, log_callback, progress_callback):
     try:
         log_callback("--- 清空 output 目錄 ---")
         if os.path.exists(helpers.OUTPUT_DIR):
-            shutil.rmtree(helpers.OUTPUT_DIR)
+            try:
+                shutil.rmtree(helpers.OUTPUT_DIR)
+            except PermissionError:
+                log_callback(f"[錯誤] 無法清空 output 資料夾，因為裡面的檔案正被其他程式使用中。")
+                log_callback("       請關閉所有 output 資料夾中的檔案 (特別是 Excel 結果檔)，然後再試一次。")
+                return None
         os.makedirs(helpers.OUTPUT_DIR)
         log_callback("output 目錄已清空並重建。")
 
