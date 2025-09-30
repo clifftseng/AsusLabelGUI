@@ -2,20 +2,15 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import os
 import threading
-# import processing_module # This will be imported locally
 
 class ToolGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("ASUS Label 處理工具 v0.3")
+        self.title("ASUS Label 處理工具 v0.1")
         self.geometry("600x700")
 
         # --- 變數區 ---
-        self.option_chatgpt_only = tk.BooleanVar(value=True)
-        self.option_chatgpt_pos = tk.BooleanVar(value=False)
-        self.option_ocr_pos = tk.BooleanVar(value=False)
-        self.option_owl_vit = tk.BooleanVar(value=False) # New OWL-ViT option
-        self.option_owlvit_chatgpt = tk.BooleanVar(value=False) # New Combo Mode
+        self.coord_mode = tk.StringVar(value="chatgpt_pos") # New variable for Radiobuttons
         self.result_file_path = None
 
         # --- Layout ---
@@ -40,14 +35,11 @@ class ToolGUI(tk.Tk):
         self.progress_label = ttk.Label(progress_frame, text="0%")
         self.progress_label.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # 3. 選擇區
-        options_frame = ttk.LabelFrame(self, text="3. 選擇區", padding=(10, 5))
+        # 3. 選擇區 (改為 Radiobutton)
+        options_frame = ttk.LabelFrame(self, text="3. 座標擷取模式 (格式檔存在時使用)", padding=(10, 5))
         options_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
-        ttk.Checkbutton(options_frame, text="純ChatGPT", variable=self.option_chatgpt_only).grid(row=0, column=0, padx=5, pady=2, sticky="w")
-        ttk.Checkbutton(options_frame, text="ChatGPT + 座標", variable=self.option_chatgpt_pos).grid(row=0, column=1, padx=5, pady=2, sticky="w")
-        ttk.Checkbutton(options_frame, text="OCR + 座標", variable=self.option_ocr_pos).grid(row=0, column=2, padx=5, pady=2, sticky="w")
-        ttk.Checkbutton(options_frame, text="OWL-ViT", variable=self.option_owl_vit).grid(row=0, column=3, padx=5, pady=2, sticky="w") # New OWL-ViT Checkbutton
-        ttk.Checkbutton(options_frame, text="OWL-ViT + ChatGPT", variable=self.option_owlvit_chatgpt).grid(row=1, column=0, padx=5, pady=2, sticky="w") # New Combo Checkbutton
+        ttk.Radiobutton(options_frame, text="ChatGPT + 座標", variable=self.coord_mode, value="chatgpt_pos").grid(row=0, column=0, padx=5, pady=2, sticky="w")
+        ttk.Radiobutton(options_frame, text="OCR + 座標", variable=self.coord_mode, value="ocr_pos", state="disabled").grid(row=0, column=1, padx=5, pady=2, sticky="w")
 
         # 4. 文字訊息Log區
         log_frame = ttk.LabelFrame(self, text="4. Log訊息區", padding=(10, 5))
@@ -92,29 +84,24 @@ class ToolGUI(tk.Tk):
 
     def show_help(self):
         help_text = """
-        歡迎使用 ASUS Label 處理工具 v0.3
+        歡迎使用 ASUS Label 處理工具 v0.1
+
+        核心邏輯已改為自動判斷，無需手動選擇大部分模式。
+
+        處理順序如下：
+        1.  如果 PDF 只有一頁且無格式檔，自動使用 OWL-ViT。
+        2.  如果 PDF 找得到對應的格式檔，則使用下方選擇的座標擷取模式。
+        3.  如果 PDF 為多頁且無格式檔，自動使用純 ChatGPT 分析。
 
         操作步驟：
         1. 將所有要處理的 PDF 檔案放入程式目錄下的 `input` 資料夾中。
 
-        2. 根據您的需求，在「選擇區」勾選處理模式：
-
-           - [ 純ChatGPT ]
-             此模式會讀取每一個 PDF 檔案的每一頁，將其轉換為圖片後，
-             發送給 AI 進行分析。適用於沒有固定格式的文件。
-
-           - [ ChatGPT + 座標 ]
-             此模式會根據 PDF 的檔名，去 `format` 資料夾中尋找對應
-             的 JSON 設定檔。它只會裁切 JSON 中定義的特定頁面與座標
-             (bounding box) 區域，並將這些精確的圖片發送給 AI 分析。
-             此模式處理速度更快、成本更低，適用於格式固定的文件。
-
-           - [ OCR + 座標 ]
-             (此功能尚未實作)
+        2. 在「座標擷取模式」中選擇一種模式(預設為 ChatGPT)。
+           這只會在檔案有找到對應的 `format` 設定檔時生效。
 
         3. 按下「開始處理」按鈕。
 
-        4. 您可以在「Log訊息區」看到詳細的結構化處理過程。
+        4. 您可以在「Log訊息區」看到詳細的處理過程。
 
         5. 處理完成後，結果檔案將會存放在 `output` 資料夾中。
         """
@@ -160,13 +147,9 @@ class ToolGUI(tk.Tk):
 
             # --- 3. 收集選項並呼叫模組 ---
             selected_options = {
-                'chatgpt_only': self.option_chatgpt_only.get(),
-                'chatgpt_pos': self.option_chatgpt_pos.get(),
-                'ocr_pos': self.option_ocr_pos.get(),
-                'owl_vit': self.option_owl_vit.get(),
-                'owlvit_chatgpt': self.option_owlvit_chatgpt.get()
+                'coord_mode': self.coord_mode.get()
             }
-            self.log_message(f"選擇的選項: {selected_options}")
+            self.log_message(f"選擇的座標模式: {selected_options['coord_mode']}")
             
             self.result_file_path = processing_module.run_processing(
                 selected_options=selected_options,
@@ -202,11 +185,11 @@ class ToolGUI(tk.Tk):
                     self.log_message(f"[錯誤] 無法打開檔案: {e}")
                     messagebox.showerror("打開失敗", f"無法打開檔案:\n{self.result_file_path}\n\n錯誤: {e}")
             else:
-                self.log_message("[錯誤] 檔案不存在於指定路徑。")
-                messagebox.showwarning("找不到檔案", "結果檔案不存在，可能尚未生成或已被移動。")
+                self.log_message("[錯誤] 檔案不存在於指定路徑。" )
+                messagebox.showwarning("找不到檔案", "結果檔案不存在，可能尚未生成或已被移動。" )
         else:
-            self.log_message("[錯誤] 結果檔案路徑未設定。")
-            messagebox.showwarning("找不到檔案", "結果檔案路徑未設定，請先執行處理程序。")
+            self.log_message("[錯誤] 結果檔案路徑未設定。" )
+            messagebox.showwarning("找不到檔案", "結果檔案路徑未設定，請先執行處理程序。" )
 
     def initialize_app(self):
         """在背景執行緒中執行耗時的初始化任務"""
@@ -222,7 +205,7 @@ class ToolGUI(tk.Tk):
 
     def on_initialization_complete(self):
         """在主執行緒中更新UI，表示初始化已完成"""
-        self.log_message("AI 模型初始化完成，可以開始處理。")
+        self.log_message("AI 模型初始化完成，可以開始處理。" )
         self.start_button.config(state="normal")
 
 if __name__ == "__main__":

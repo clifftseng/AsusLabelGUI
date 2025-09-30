@@ -1,4 +1,3 @@
-
 import os
 import shutil
 import logging
@@ -9,7 +8,7 @@ from . import mode_owlvit
 from . import mode_pure_chatgpt
 from . import shared_helpers as helpers
 
-def execute(log_callback, progress_callback, pdf_path):
+def execute(log_callback, progress_callback, pdf_path, format_path=None):
     """
     Orchestrates a two-stage process:
     1. Run OWL-ViT to generate cropped images from a PDF.
@@ -111,4 +110,3 @@ def execute(log_callback, progress_callback, pdf_path):
         if temp_crop_dir.exists():
             log_callback(f"[COMBO] Cleaning up temporary directory: {temp_crop_dir}")
             shutil.rmtree(temp_crop_dir)
-
