@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import os
 import threading
+import time
 
 class ToolGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("ASUS Label 處理工具 v0.5")
+        self.title("ASUS Label 處理工具 v0.6")
         self.geometry("600x700")
 
         # --- 變數區 ---
@@ -63,7 +64,6 @@ class ToolGUI(tk.Tk):
         self.style = ttk.Style()
         self.style.configure("Result.TButton", background="lightgrey")
 
-        # Initial state - button is enabled immediately
         self.log_message("程式介面已就緒，請將檔案放入 input 資料夾後，按下「開始處理」。")
 
     def log_message(self, msg):
@@ -76,7 +76,7 @@ class ToolGUI(tk.Tk):
 
     def show_help(self):
         help_text = """
-        歡迎使用 ASUS Label 處理工具 v0.5
+        歡迎使用 ASUS Label 處理工具 v0.6
 
         核心邏輯已改為自動判斷，無需手動選擇大部分模式。
 
@@ -106,17 +106,24 @@ class ToolGUI(tk.Tk):
         self.after(0, _update)
 
     def processing_logic(self):
-        import processing_module
         try:
+            # --- NEW: Log messages before heavy import ---
+            self.log_message("處理程序開始...")
+            self.log_message("正在載入核心處理模組(torch/transformers)，請稍候...")
+            self.update()
+            time.sleep(0.1) # Give GUI a moment to update the log
+
+            import processing_module # This is the slow part
+
+            # --- UI Reset and Setup ---
             self.after(0, lambda: self.open_result_button.config(state="disabled") )
             self.after(0, lambda: self.style.configure("Result.TButton", background="lightgrey"))
             self.result_file_path = None
-            self.log_text.config(state="normal")
-            self.log_text.delete('1.0', tk.END)
-            self.log_text.config(state="disabled")
-        
+            # Clear log *after* initial messages
+            self.after(100, lambda: self.log_text.config(state="normal") or self.log_text.delete('1.0', tk.END) or self.log_text.config(state="disabled"))
+            self.after(100, lambda: self.log_message("核心模組載入完畢，開始執行處理流程。"))
+
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
-            self.log_message("處理程序開始...")
             self.update_progress(0)
 
             input_dir = "input"

@@ -49,7 +49,6 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
         all_processed_data = []
         total_images = len(cropped_images)
 
-        # Load prompts once using the correct helper function
         system_prompt = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_system_using_label.txt"))
         user_prompt_template = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_user.txt"))
 
@@ -62,19 +61,15 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
             log_callback(f"[COMBO] Analyzing crop {i+1}/{total_images}: {image_name}")
 
             try:
-                # Encode the single image for the API call
-                base64_image = helpers.image_file_to_base64(image_path)
+                base64_image = helpers.image_file_to_base64(image_path, log_callback)
                 if not base64_image:
                     continue
 
-                # Construct the user content for the API
-                # Note: The user prompt might need adjustment for single crops vs. full pages
                 user_content = [
                     {"type": "text", "text": user_prompt_template},
                     {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
                 ]
 
-                # Call the new, centralized API helper function
                 response_json = helpers.query_chatgpt_vision_api(
                     system_prompt=system_prompt,
                     user_content=user_content,
@@ -82,21 +77,18 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
                 )
 
                 if response_json:
-                    # Add the source image name to the data for traceability
                     response_json['Source Image'] = image_name
                     all_processed_data.append(response_json)
                 
             except Exception as e:
                 log_callback(f"[COMBO] Error analyzing crop {image_name}: {e}")
             
-            # Update progress within the combo mode's allocated progress slice
             progress_callback((i + 1) / total_images * 100)
 
         if not all_processed_data:
             log_callback("[COMBO] No data was successfully extracted from any of the cropped images.")
             return None
 
-        # Prepare the final data structure for saving to Excel
         final_data = {
             'processed_data': all_processed_data,
             'file_name': pdf_filename
@@ -106,7 +98,6 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
         return final_data
 
     finally:
-        # --- Clean up the temporary directory ---
         if temp_crop_dir.exists():
             log_callback(f"[COMBO] Cleaning up temporary directory: {temp_crop_dir}")
             shutil.rmtree(temp_crop_dir)

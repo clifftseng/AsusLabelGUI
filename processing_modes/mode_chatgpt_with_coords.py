@@ -14,7 +14,7 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
     log_callback(f"======== 開始執行 ChatGPT + 座標模式處理檔案: {pdf_filename} ========")
 
     if not format_path or not os.path.exists(format_path):
-        log_callback(f"[錯誤] 未提供有效的格式檔路徑，無法處理檔案 {pdf_filename}")
+        log_callback(f"[錯誤] 未提供有效的格式檔路徑，無法處理檔案 {pdf_filename}。")
         return None
 
     try:
@@ -52,7 +52,7 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
         
         if max_width and max_height:
             first_page = doc[0]
-            pix_first_page = first_page.get_pixmap(dpi=200) 
+            pix_first_page = first_page.get_pixmap(dpi=200)
             original_image_p1 = Image.frombytes("RGB", [pix_first_page.width, pix_first_page.height], pix_first_page.samples)
             resized_image = original_image_p1.copy()
             resized_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
@@ -104,7 +104,7 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None):
         base64_images_for_aoai = []
         for img_file in image_files:
             img_path = os.path.join(pdf_output_subdir, img_file)
-            base64_img = helpers.image_file_to_base64(img_path)
+            base64_img = helpers.image_file_to_base64(img_path, log_callback)
             if base64_img:
                 base64_images_for_aoai.append(base64_img)
         if not base64_images_for_aoai:

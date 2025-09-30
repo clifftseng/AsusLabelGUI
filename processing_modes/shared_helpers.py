@@ -4,6 +4,8 @@ import json
 import re
 import sys
 import shutil
+import time
+import threading
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 import fitz  # PyMuPDF
@@ -13,16 +15,13 @@ from PIL import Image
 from collections import Counter
 
 # --- Configuration ---
-# Load environment variables from .env file
 load_dotenv()
-
-# Get Azure OpenAI credentials from environment variables
 AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
 AZURE_OPENAI_DEPLOYMENT_NAME = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
 AZURE_OPENAI_API_VERSION = "2024-02-01"
+API_CALL_DELAY_SECONDS = 20 # Configurable delay between API calls
 
-# Define directories based on the project root
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 USER_INPUT_DIR = os.path.join(BASE_DIR, "input")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
@@ -32,6 +31,26 @@ EXCEL_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "excel")
 REF_DIR = os.path.join(BASE_DIR, "ref")
 SINGLE_TEMPLATE_PATH = os.path.join(REF_DIR, "single.xlsx")
 TOTAL_TEMPLATE_PATH = os.path.join(REF_DIR, "total.xlsx")
+
+# --- Rate Limiter ---
+class APIRateLimiter:
+    def __init__(self, delay_seconds):
+        self.delay = delay_seconds
+        self.last_call_time = 0
+        self.lock = threading.Lock()
+
+    def acquire_permission(self, log_callback=None):
+        with self.lock:
+            current_time = time.time()
+            elapsed = current_time - self.last_call_time
+            if elapsed < self.delay:
+                wait_time = self.delay - elapsed
+                if log_callback:
+                    log_callback(f"[API Rate Limit] 距離上次呼叫僅過 {elapsed:.1f} 秒，將等待 {wait_time:.1f} 秒...")
+                time.sleep(wait_time)
+            self.last_call_time = time.time()
+
+api_rate_limiter = APIRateLimiter(delay_seconds=API_CALL_DELAY_SECONDS)
 
 # --- Model Cache ---
 MODEL_CACHE = {}
@@ -52,6 +71,8 @@ def get_owlvit_model(log_callback=None):
         return MODEL_CACHE["owlvit"]
     
     if log_callback: log_callback("  - 首次載入 OWL-ViT 模型 (可能需要幾分鐘)..." )
+    time.sleep(0.1) # NEW: Give the GUI thread time to display the message
+
     from transformers import OwlViTProcessor, OwlViTForObjectDetection
     import torch
 
@@ -65,16 +86,13 @@ def get_owlvit_model(log_callback=None):
     return model, processor
 
 def preload_models(log_callback=None):
-    """This function is now deprecated as we moved to lazy loading."""
     pass
 
 def ensure_template_files_exist(log_callback):
     if not os.path.exists(EXCEL_OUTPUT_DIR):
         os.makedirs(EXCEL_OUTPUT_DIR)
-
     target_single_path = os.path.join(EXCEL_OUTPUT_DIR, os.path.basename(SINGLE_TEMPLATE_PATH))
     target_total_path = os.path.join(EXCEL_OUTPUT_DIR, os.path.basename(TOTAL_TEMPLATE_PATH))
-
     if not os.path.exists(target_single_path):
         try:
             shutil.copy(SINGLE_TEMPLATE_PATH, target_single_path)
@@ -82,7 +100,6 @@ def ensure_template_files_exist(log_callback):
         except FileNotFoundError:
             log_callback(f"[錯誤] 找不到單一範本檔案: {SINGLE_TEMPLATE_PATH}")
             return False
-
     if not os.path.exists(target_total_path):
         try:
             shutil.copy(TOTAL_TEMPLATE_PATH, target_total_path)
@@ -96,19 +113,19 @@ def ensure_template_files_exist(log_callback):
 def get_azure_openai_client():
     if not all([AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY, AZURE_OPENAI_DEPLOYMENT_NAME]):
         raise ValueError("Azure OpenAI environment variables are not fully configured.")
-    return AzureOpenAI(
-        api_key=AZURE_OPENAI_API_KEY,
-        api_version=AZURE_OPENAI_API_VERSION,
-        azure_endpoint=AZURE_OPENAI_ENDPOINT
-    )
+    return AzureOpenAI(api_key=AZURE_OPENAI_API_KEY, api_version=AZURE_OPENAI_API_VERSION, azure_endpoint=AZURE_OPENAI_ENDPOINT)
 
 def sanitize_for_excel(text):
     if not isinstance(text, str):
         return text
     return re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F]', '', text)
 
-def encode_image_to_base64(image_bytes):
-    return base64.b64encode(image_bytes).decode("utf-8")
+def read_prompt_file(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return None
 
 def pdf_to_base64_images(pdf_path, log_callback, sub_progress_callback=None):
     images = []
@@ -121,7 +138,7 @@ def pdf_to_base64_images(pdf_path, log_callback, sub_progress_callback=None):
         for page_num, page in enumerate(doc):
             pix = page.get_pixmap(dpi=150)
             img_bytes = pix.tobytes("png")
-            images.append(encode_image_to_base64(img_bytes))
+            images.append(base64.b64encode(img_bytes).decode("utf-8"))
             if sub_progress_callback:
                 sub_progress_callback(page_num + 1, total_pages)
         doc.close()
@@ -130,7 +147,7 @@ def pdf_to_base64_images(pdf_path, log_callback, sub_progress_callback=None):
         return None
     return images
 
-def image_file_to_base64(image_path):
+def image_file_to_base64(image_path, log_callback):
     try:
         with open(image_path, "rb") as f:
             return base64.b64encode(f.read()).decode("utf-8")
@@ -138,14 +155,9 @@ def image_file_to_base64(image_path):
         log_callback(f"錯誤：讀取或編碼圖片檔案 '{os.path.basename(image_path)}' 時發生錯誤: {e}")
         return None
 
-def read_prompt_file(file_path):
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        return None
-
 def query_chatgpt_vision_api(system_prompt, user_content, log_callback):
+    api_rate_limiter.acquire_permission(log_callback)
+    log_callback("  - 已取得 API 呼叫許可，正在發送請求...")
     try:
         client = get_azure_openai_client()
         response = client.chat.completions.create(
@@ -154,10 +166,7 @@ def query_chatgpt_vision_api(system_prompt, user_content, log_callback):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content}
             ],
-            max_tokens=4096,
-            temperature=0.1,
-            top_p=0.95,
-            response_format={"type": "json_object"}
+            max_tokens=4096, temperature=0.1, top_p=0.95, response_format={"type": "json_object"}
         )
         log_callback(f"      - AI 回應接收成功。" )
         return json.loads(response.choices[0].message.content)
@@ -165,7 +174,8 @@ def query_chatgpt_vision_api(system_prompt, user_content, log_callback):
         log_callback(f"    [錯誤] AI API 呼叫或解析失敗: {e}")
         return None
 
-# --- Excel Helper Functions ---
+# --- (The rest of the helper functions: get_display_value, format_evidence, etc. remain the same) ---
+
 def get_display_value(data_dict):
     if not isinstance(data_dict, dict):
         return "無"
@@ -258,7 +268,6 @@ def save_to_excel(processed_data_wrapper, output_folder, original_filename, log_
         log_callback(f"[錯誤] 儲存 Excel 檔案時發生錯誤 ({original_filename}): {e}")
 
 def apply_highlighting_rules(excel_path, log_callback):
-    """Applies conditional formatting rules to the final total.xlsx file."""
     try:
         wb = load_workbook(excel_path)
         ws = wb.active
@@ -269,18 +278,12 @@ def apply_highlighting_rules(excel_path, log_callback):
 
     red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
 
-    # 1. Define column indices directly
-    # B=2, C=3, D=4, E=5, F=6, G=7, H=8
     category_col_idx = 2 # Column B for '分類'
     columns_to_check_indices = [3, 4, 5, 6, 7, 8] # Columns C to H
 
-    # 2. Read all data and identify artwork rows
     artwork_row_indices = []
-    # Start from row 2 to skip header
     for row_idx, row in enumerate(ws.iter_rows(min_row=2, values_only=True), start=2):
-        if not any(row): # Skip empty rows
-            continue
-        # Check if category column exists and has the value
+        if not any(row): continue
         if len(row) >= category_col_idx and row[category_col_idx - 1] == 'Battery Label Artwork':
             artwork_row_indices.append(row_idx)
 
@@ -288,15 +291,12 @@ def apply_highlighting_rules(excel_path, log_callback):
         log_callback("[資訊] Excel 中沒有資料，跳過標色。" )
         return
 
-    # 3. Apply rules
     if len(artwork_row_indices) == 1:
         log_callback("[規則 1] 偵測到單一 'Battery Label Artwork'，以此為標準。" )
         standard_row_idx = artwork_row_indices[0]
-        
         for col_idx in columns_to_check_indices:
             standard_cell = ws.cell(row=standard_row_idx, column=col_idx)
             standard_value = standard_cell.value
-
             for row_idx in range(2, ws.max_row + 1):
                 if row_idx == standard_row_idx: continue
                 cell = ws.cell(row=row_idx, column=col_idx)
@@ -318,11 +318,9 @@ def apply_highlighting_rules(excel_path, log_callback):
         for col_idx in columns_to_check_indices:
             col_values = [ws.cell(row=r_idx, column=col_idx).value for r_idx in range(2, ws.max_row + 1) if ws.cell(row=r_idx, column=col_idx).value is not None]
             if not col_values: continue
-
             value_counts = Counter(col_values)
             most_common = value_counts.most_common()
             header_name = ws.cell(row=1, column=col_idx).value
-
             if len(most_common) > 1 and most_common[0][1] == most_common[1][1]:
                 log_callback(f"  - 欄位 '{header_name}' 出現平手，整欄標紅。" )
                 for r_idx in range(2, ws.max_row + 1):
@@ -335,6 +333,5 @@ def apply_highlighting_rules(excel_path, log_callback):
                     if cell.value != majority_value:
                         cell.fill = red_fill
 
-    # 4. Save the workbook
     wb.save(excel_path)
     log_callback("成功儲存已標色的 Excel 檔案。" )
