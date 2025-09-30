@@ -125,6 +125,16 @@ def run_processing(selected_options, log_callback, progress_callback):
             if os.path.exists(original_total_path):
                 shutil.move(original_total_path, final_total_path)
                 log_callback(f"已將 total.xlsx 重新命名為 {final_total_filename}")
+
+                # --- NEW: APPLY HIGHLIGHTING RULES ---
+                log_callback("--- 開始執行 Excel 差異標色規則 ---")
+                try:
+                    helpers.apply_highlighting_rules(final_total_path, log_callback)
+                    log_callback("差異標色完成。")
+                except Exception as e:
+                    log_callback(f"[錯誤] 執行 Excel 差異標色時發生錯誤: {e}")
+                # --- END NEW SECTION ---
+
                 progress_callback(100)
                 return final_total_path
         
