@@ -107,21 +107,18 @@ class ToolGUI(tk.Tk):
 
     def processing_logic(self):
         try:
-            # --- NEW: Log messages before heavy import ---
             self.log_message("處理程序開始...")
             self.log_message("正在載入核心處理模組(torch/transformers)，請稍候...")
             self.update()
-            time.sleep(0.1) # Give GUI a moment to update the log
+            time.sleep(0.1)
 
-            import processing_module # This is the slow part
+            import processing_module
 
-            # --- UI Reset and Setup ---
-            self.after(0, lambda: self.open_result_button.config(state="disabled") )
-            self.after(0, lambda: self.style.configure("Result.TButton", background="lightgrey"))
-            self.result_file_path = None
-            # Clear log *after* initial messages
-            self.after(100, lambda: self.log_text.config(state="normal") or self.log_text.delete('1.0', tk.END) or self.log_text.config(state="disabled"))
-            self.after(100, lambda: self.log_message("核心模組載入完畢，開始執行處理流程。"))
+            # Clear log before starting the main process messages
+            self.log_text.config(state="normal")
+            self.log_text.delete('1.0', tk.END)
+            self.log_text.config(state="disabled")
+            self.log_message("核心模組載入完畢，開始執行處理流程。")
 
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
             self.update_progress(0)
@@ -146,7 +143,7 @@ class ToolGUI(tk.Tk):
             self.after(0, lambda: self.style.configure("Result.TButton", background="lightgreen"))
             self.update_progress(100)
             if self.result_file_path:
-                self.after(0, lambda: self.open_result_button.config(state="normal") )
+                self.after(0, lambda: self.open_result_button.config(state="normal"))
 
         except Exception as e:
             self.log_message(f"處理過程中發生嚴重錯誤，請查看日誌。詳細資訊: {e}")

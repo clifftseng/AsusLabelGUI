@@ -13,6 +13,11 @@
                 "page": 1,
                 "loc": "bbox(top_left, xywh): [37,7,243,30]",
                 "quote": "[Brand -> ASUS, Models -> C41N2503]"
+            },
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [153,492,393,22]",
+                "quote": "[Brand -> ASUS, Models -> C41N2503]"
             }
         ]
     },
@@ -42,5 +47,5 @@
         "evidence": []
     },
     "conflicts": [],
-    "notes": "頁碼採絕對 1-based。本文件主要語言為英文。僅在文件中找到型號資訊，其餘欄位切圖與 hints 搜尋均未獲值。"
+    "notes": "頁碼採絕對 1-based。本文件僅提供型號資訊，未出現電壓、容量或能量數值；切圖與 hints 搜尋均未獲值。主要語言為英文。"
 }

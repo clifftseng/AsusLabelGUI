@@ -3,6 +3,7 @@ import shutil
 import datetime
 import threading
 import queue
+import time
 from processing_modes import mode_pure_chatgpt, mode_chatgpt_with_coords, mode_ocr_with_coords, mode_owlvit, mode_owlvit_then_chatgpt
 from processing_modes import shared_helpers as helpers
 import fitz  # PyMuPDF
@@ -54,18 +55,21 @@ def process_file_worker(filename, selected_options, available_formats, log_callb
             
             processed_data_for_file = mode_to_run.execute(
                 log_callback=log_callback,
-                progress_callback=progress_callback,
+                progress_callback=lambda p: None, # Sub-progress is disabled in multi-threading
                 pdf_path=pdf_full_path,
                 format_path=format_path_for_mode 
             )
-            if processed_data_for_file:
-                results_queue.put(processed_data_for_file)
+            # Put the result in the queue, even if it's None, to signal completion
+            results_queue.put(processed_data_for_file)
         else:
             log_callback(f"[警告][執行緒: {filename}] 找不到適合的處理模式。")
+            results_queue.put(None) # Also signal completion
+
     except Exception as e:
         log_callback(f"[錯誤][執行緒: {filename}] 處理時發生未預期錯誤: {e}")
         import traceback
         log_callback(traceback.format_exc())
+        results_queue.put(None) # Signal completion even on failure
 
 def run_processing(selected_options, log_callback, progress_callback):
     try:
@@ -110,45 +114,47 @@ def run_processing(selected_options, log_callback, progress_callback):
         log_callback(f"--- 開始為 {len(pdf_files)} 個檔案建立並行處理執行緒 ---")
         results_queue = queue.Queue()
         threads = []
-        for i, filename in enumerate(pdf_files):
+        for filename in pdf_files:
             thread = threading.Thread(
                 target=process_file_worker,
-                args=(filename, selected_options, available_formats, log_callback, lambda p: None, results_queue)
+                args=(filename, selected_options, available_formats, log_callback, progress_callback, results_queue)
             )
             threads.append(thread)
             thread.start()
             log_callback(f"  - 執行緒已啟動: {filename}")
 
+        # --- New Progress Monitoring & Result Collection Logic ---
+        final_results = []
+        total_files = len(pdf_files)
+        for i in range(total_files):
+            result = results_queue.get() # This will block until a thread puts a result in the queue
+            if result:
+                final_results.append(result)
+            
+            progress = ((i + 1) / total_files) * 100
+            progress_callback(progress)
+            log_callback(f"[進度] {i + 1}/{total_files} 個檔案處理完成 ({progress:.0f}%)。")
+
         for thread in threads:
             thread.join()
         log_callback("--- 所有檔案處理執行緒已完成 --- ")
-
-        log_callback("--- 開始彙整所有執行緒的處理結果 ---")
-        final_results = []
-        while not results_queue.empty():
-            final_results.append(results_queue.get())
 
         if not final_results:
             log_callback("[警告] 所有檔案處理完畢，但未收到任何有效的資料可寫入 Excel。")
             return None
 
-        # --- NEW: Sort results to prioritize 'Battery Label Artwork' ---
         def get_category_from_result(result):
             try:
-                # The result from the queue is a dict with 'processed_data' (list) and 'file_name'
-                # The actual data from AI is inside the list.
                 merged_data = {}
                 for d in result.get('processed_data', []):
                     merged_data.update(d)
-                return merged_data.get('file', {}).get('category', 'Z') # Use Z to sort last if not found
+                return merged_data.get('file', {}).get('category', 'Z')
             except (IndexError, TypeError):
                 return 'Z'
         
         final_results.sort(key=lambda r: 0 if get_category_from_result(r) == 'Battery Label Artwork' else 1)
         log_callback("結果已根據 'Battery Label Artwork' 優先級排序。")
-        # --- END NEW SECTION ---
 
-        # Save results to Excel sequentially
         for result in final_results:
             helpers.save_to_excel(result, helpers.EXCEL_OUTPUT_DIR, result['file_name'], log_callback)
         
