@@ -35,7 +35,7 @@ def run_processing(selected_options, log_callback, progress_callback):
             log_callback(f"在 {helpers.USER_INPUT_DIR} 中找不到任何 PDF 檔案。")
             return None
 
-        # --- New Automated Logic ---
+        # --- New Lazy Loading Logic ---
 
         # 1. Pre-load all available format names
         log_callback("正在讀取所有可用的格式檔...")
@@ -43,12 +43,30 @@ def run_processing(selected_options, log_callback, progress_callback):
         available_formats.sort(key=len, reverse=True)
         log_callback(f"找到 {len(available_formats)} 個格式。")
 
-        # 2. Prepare templates, as Excel generation is likely
+        # 2. Pre-flight check to see if OWL-ViT model is needed
+        log_callback("預先掃描檔案以決定是否需要載入 OWL-ViT 模型...")
+        owlvit_needed = False
+        for filename in pdf_files:
+            page_count = get_pdf_page_count(os.path.join(helpers.USER_INPUT_DIR, filename))
+            format_found = any(fmt in filename for fmt in available_formats)
+            if page_count == 1 and not format_found:
+                owlvit_needed = True
+                log_callback("  - 偵測到需要使用 OWL-ViT 的檔案，將在處理前載入模型。")
+                break # Found one, no need to check further
+        
+        if not owlvit_needed:
+            log_callback("  - 本次任務無需使用 OWL-ViT 模型。")
+
+        # 3. Load OWL-ViT model only if needed
+        if owlvit_needed:
+            helpers.get_owlvit_model(log_callback)
+
+        # 4. Prepare templates for Excel
         if not helpers.ensure_template_files_exist(log_callback):
             log_callback("[錯誤] Excel 範本檔案準備失敗，處理終止。")
             return None
 
-        # 3. Execute automated logic for each file
+        # 5. Execute automated logic for each file
         total_files = len(pdf_files)
         excel_was_generated = False
         for i, filename in enumerate(pdf_files):
@@ -71,10 +89,9 @@ def run_processing(selected_options, log_callback, progress_callback):
             mode_to_run = None
             mode_name = ""
 
-            # Determine which mode to run based on the new logic
             if page_count == 1 and not format_file_exists:
-                mode_to_run = mode_owlvit_then_chatgpt # CHANGED: Use the full combo mode
-                mode_name = "OWL-ViT + ChatGPT (單頁且無格式檔)" # CHANGED: Update log message
+                mode_to_run = mode_owlvit_then_chatgpt
+                mode_name = "OWL-ViT + ChatGPT (單頁且無格式檔)"
             elif format_file_exists:
                 coord_mode_selection = selected_options.get('coord_mode', 'chatgpt_pos')
                 if coord_mode_selection == 'ocr_pos':
@@ -89,18 +106,7 @@ def run_processing(selected_options, log_callback, progress_callback):
 
             log_callback(f"自動選擇模式: {mode_name}")
 
-            # Execute the chosen mode
-            if mode_to_run == mode_owlvit: # This block will now likely not be used, but kept for safety
-                base_name = os.path.splitext(filename)[0]
-                file_output_dir = os.path.join(helpers.OUTPUT_DIR, base_name)
-                os.makedirs(file_output_dir, exist_ok=True)
-                mode_to_run.process(
-                    file_path=pdf_full_path,
-                    output_dir=file_output_dir,
-                    progress_callback=log_callback 
-                )
-                file_progress_handler(100)
-            elif mode_to_run: # All our main modes are now Excel-producing
+            if mode_to_run: 
                 excel_was_generated = True
                 format_path_for_mode = os.path.join(helpers.FORMAT_DIR, f"{found_format_name}.json") if found_format_name else None
                 
@@ -115,7 +121,7 @@ def run_processing(selected_options, log_callback, progress_callback):
             else:
                 log_callback(f"[警告] 找不到適合 {filename} 的處理模式。")
 
-        # 4. Finalize and return the correct result path
+        # 6. Finalize and apply highlighting
         if excel_was_generated:
             timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             final_total_filename = f"total_{timestamp}.xlsx"
@@ -126,14 +132,12 @@ def run_processing(selected_options, log_callback, progress_callback):
                 shutil.move(original_total_path, final_total_path)
                 log_callback(f"已將 total.xlsx 重新命名為 {final_total_filename}")
 
-                # --- NEW: APPLY HIGHLIGHTING RULES ---
                 log_callback("--- 開始執行 Excel 差異標色規則 ---")
                 try:
                     helpers.apply_highlighting_rules(final_total_path, log_callback)
                     log_callback("差異標色完成。")
                 except Exception as e:
                     log_callback(f"[錯誤] 執行 Excel 差異標色時發生錯誤: {e}")
-                # --- END NEW SECTION ---
 
                 progress_callback(100)
                 return final_total_path

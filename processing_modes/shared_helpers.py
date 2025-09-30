@@ -65,9 +65,8 @@ def get_owlvit_model(log_callback=None):
     return model, processor
 
 def preload_models(log_callback=None):
-    if log_callback: log_callback("開始預載入所有 AI 模型..." )
-    get_owlvit_model(log_callback)
-    if log_callback: log_callback("所有 AI 模型已預載入完成。" )
+    """This function is now deprecated as we moved to lazy loading."""
+    pass
 
 def ensure_template_files_exist(log_callback):
     if not os.path.exists(EXCEL_OUTPUT_DIR):
