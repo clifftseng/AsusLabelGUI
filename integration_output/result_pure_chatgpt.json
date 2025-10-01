@@ -9,12 +9,12 @@
             "language": "zh",
             "model_name": {
                 "value": "20HK2",
-                "raw_value": "型式：20HK2",
+                "raw_value": "型式 20HK2",
                 "evidence": [
                     {
                         "page": 1,
-                        "loc": "Type field",
-                        "quote": "型式：20HK2"
+                        "loc": "Type field under product name section",
+                        "quote": "型式 20HK2"
                     }
                 ]
             },
@@ -49,7 +49,7 @@
                 "evidence": []
             },
             "conflicts": [],
-            "notes": "以檔名比對，命中分類 'BSMI LOA'。文件僅提供型號資訊，未提供電壓、容量或能量數據。"
+            "notes": "以檔名比對命中分類 'BSMI LOA'。文件僅提供型號，未提供電壓、容量或能量資訊，故相關欄位均為 null。"
         }
     ],
     "file_name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 BSMI LOA.pdf"

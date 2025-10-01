@@ -58,19 +58,35 @@ def get_owlvit_model(log_callback=None):
         if log_callback: log_callback("  - 從快取中取得 OWL-ViT 模型。")
         return CACHE["owlvit"]
     
-    if log_callback: log_callback(f"  - 首次從本地資料夾 {MODEL_DIR} 載入 OWL-ViT 模型...")
-    time.sleep(0.1)
-
     from transformers import OwlViTProcessor, OwlViTForObjectDetection
     import torch
 
     device = get_device()
+
     try:
+        # 優先嘗試從本地資料夾載入
+        if log_callback: log_callback(f"  - 正在從本地資料夾 {MODEL_DIR} 載入 OWL-ViT 模型...")
         processor = OwlViTProcessor.from_pretrained(MODEL_DIR)
         model = OwlViTForObjectDetection.from_pretrained(MODEL_DIR).to(device)
+        if log_callback: log_callback("  - 本地模型載入成功。")
+
     except OSError:
-        log_callback(f"[錯誤] 在 {MODEL_DIR} 中找不到模型檔案。請確認模型已下載至該位置。")
-        raise
+        # 若本地載入失敗 (例如資料夾不存在)，則從網路下載並儲存
+        if log_callback: log_callback(f"[警告] 在 {MODEL_DIR} 中找不到模型。將從網路下載並儲存以供未來使用。")
+        if log_callback: log_callback("  - 首次下載，請稍候 (可能需要幾分鐘)...")
+        
+        model_name = "google/owlvit-base-patch32"
+        processor = OwlViTProcessor.from_pretrained(model_name)
+        model = OwlViTForObjectDetection.from_pretrained(model_name) # 下載
+        
+        if log_callback: log_callback("  - 模型下載成功，正在儲存到本地資料夾...")
+        if not os.path.exists(MODEL_DIR):
+            os.makedirs(MODEL_DIR)
+        processor.save_pretrained(MODEL_DIR) # 儲存以供下次使用
+        model.save_pretrained(MODEL_DIR)
+        if log_callback: log_callback(f"  - 模型已成功儲存至 {MODEL_DIR}。")
+        
+        model = model.to(device) # 將下載好的模型移至正確裝置
         
     model.eval()
     

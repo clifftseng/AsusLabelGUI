@@ -1,7 +1,7 @@
 {
     "file": {
-        "name": "20HK2 BSMI Cert.pdf",
-        "category": "BSMI Cert",
+        "name": "C145107065B117 BSMI LOA.pdf",
+        "category": "BSMI LOA",
         "page_count": 1
     },
     "language": "zh",
@@ -42,5 +42,5 @@
         "evidence": []
     },
     "conflicts": [],
-    "notes": "主要語言為中文。僅 model_name 有切圖並成功辨識，其餘欄位在切圖與 hints 搜尋均未獲值。頁碼採絕對 1-based。"
+    "notes": "主要語言為中文。僅 model_name 於切圖中取得，其餘欄位在切圖與文件中均未找到相關數值。"
 }

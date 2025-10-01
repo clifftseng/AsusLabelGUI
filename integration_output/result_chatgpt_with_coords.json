@@ -2,7 +2,7 @@
     "processed_data": [
         {
             "file": {
-                "name": "20HK2 BSMI LOA.pdf",
+                "name": "C145107065B117 BSMI LOA.pdf",
                 "category": "BSMI LOA",
                 "page_count": 1
             },
@@ -14,7 +14,7 @@
                     {
                         "page": 1,
                         "loc": "cropped_image:model_name.png",
-                        "quote": "20HK2"
+                        "quote": "型式：20HK2"
                     }
                 ]
             },
@@ -44,7 +44,7 @@
                 "evidence": []
             },
             "conflicts": [],
-            "notes": "主要語言為中文，文件為BSMI進口授權通知書。僅在切圖中取得型號20HK2，其餘欄位在切圖與原頁面均未找到相關數值。"
+            "notes": "主要語言為中文。僅 model_name 於切圖中取得，其餘欄位在切圖與文件中均未找到相關數值。"
         }
     ],
     "file_name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 BSMI LOA.pdf"
