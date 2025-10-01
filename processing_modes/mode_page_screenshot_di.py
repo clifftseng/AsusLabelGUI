@@ -67,7 +67,7 @@ def execute(pdf_path: str, format_dir: str, output_dir: str, log_callback):
     pages_to_process = sorted(list(unique_pages))
     log_callback(f"從格式檔中解析出要處理的頁碼: {pages_to_process}")
 
-    # --- 4. 處理 PDF 並儲存截圖 --- 
+    # --- 4. 處理 PDF、儲存截圖並進行後續分析 --- 
     try:
         doc = fitz.open(pdf_path)
     except Exception as e:
@@ -77,12 +77,21 @@ def execute(pdf_path: str, format_dir: str, output_dir: str, log_callback):
     os.makedirs(output_dir, exist_ok=True)
     pdf_stem = Path(pdf_path).stem
     
-    di_results = []
+    final_chatgpt_results = []
+
+    # 讀取通用的 prompt 檔案
+    system_prompt = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_system.txt"))
+    user_prompt_template = helpers.read_prompt_file(os.path.join(helpers.PROMPT_DIR, "prompt_user.txt"))
+
+    if not all([system_prompt, user_prompt_template]):
+        log_callback("[錯誤] 找不到 prompt_system.txt 或 prompt_user.txt，處理終止。")
+        return []
 
     for page_num in pages_to_process:
         page_index = page_num - 1
         if 0 <= page_index < len(doc):
             try:
+                # --- 步驟 4a: 截圖 ---
                 page = doc.load_page(page_index)
                 pix = page.get_pixmap(dpi=200)
                 output_filename = f"{pdf_stem}_page_{page_num}.png"
@@ -90,14 +99,40 @@ def execute(pdf_path: str, format_dir: str, output_dir: str, log_callback):
                 pix.save(output_filepath)
                 log_callback(f"  - 已儲存截圖: {output_filename}")
 
-                # --- 5. 將截圖送往 DI 進行 OCR ---
+                # --- 步驟 4b: DI 分析 ---
                 log_callback(f"  - 正在將 {output_filename} 送往 Document Intelligence...")
                 di_result = helpers.analyze_image_with_di(output_filepath, log_callback)
-                if di_result:
-                    log_callback(f"  - DI 分析成功。")
-                    di_results.append({'page': page_num, 'di_result': di_result})
+                if not di_result:
+                    log_callback(f"  - DI 分析失敗或沒有回傳結果，跳過此頁面。")
+                    continue
+                
+                log_callback(f"  - DI 分析成功。")
+                di_content = di_result.get('content', '')
+
+                # --- 步驟 4c: 呼叫 ChatGPT Vision API ---
+                log_callback(f"  - 正在組合提示並呼叫 ChatGPT Vision API...")
+                
+                # 將截圖轉為 base64
+                base64_image = helpers.image_file_to_base64(output_filepath, log_callback)
+                if not base64_image:
+                    log_callback(f"  - [錯誤] 無法將圖片轉為 Base64，跳過此頁面。")
+                    continue
+
+                # 組合 user_content
+                user_content = [
+                    {"type": "text", "text": user_prompt_template},
+                    {"type": "text", "text": f"\n--- OCRed Text Below ---\n{di_content}"}, 
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
+                ]
+
+                # 呼叫 API
+                chatgpt_json = helpers.query_chatgpt_vision_api(system_prompt, user_content, log_callback)
+
+                if chatgpt_json:
+                    log_callback(f"  - ChatGPT 分析成功。")
+                    final_chatgpt_results.append({'page': page_num, 'chatgpt_result': chatgpt_json})
                 else:
-                    log_callback(f"  - DI 分析失敗或沒有回傳結果。")
+                    log_callback(f"  - ChatGPT 分析失敗或沒有回傳結果。")
 
             except Exception as e:
                 log_callback(f"[錯誤] 處理頁面 {page_num} 時失敗: {e}")
@@ -105,5 +140,5 @@ def execute(pdf_path: str, format_dir: str, output_dir: str, log_callback):
             log_callback(f"[警告] 頁碼 {page_num} 超出 PDF 範圍 (總頁數: {len(doc)})，已略過。")
 
     doc.close()
-    log_callback(f"---【頁面截圖+DI】流程結束，共處理了 {len(di_results)} 個頁面。 ---")
-    return di_results
+    log_callback(f"---【頁面截圖+DI】流程結束，共處理了 {len(final_chatgpt_results)} 個頁面。 ---")
+    return final_chatgpt_results

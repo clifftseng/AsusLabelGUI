@@ -1,0 +1,69 @@
+{
+    "file": {
+        "name": "<檔名含副檔名>",
+        "category": "CCC Report",
+        "page_count": "<整數>"
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "型号: C41N2503",
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "5.3.1 a) 产品名称、型号",
+                "quote": "电池组: 产品名称:锂离子电池组 型号: C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "标称电压: 15.6Vdc",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "5.3.1 b) 额定容量、额定能量、充电限制电压、标称电压",
+                "quote": "电池组: 额定容量:3082mAh 额定能量:48.1Wh 充电限制电压: 18Vdc 标称电压: 15.6Vdc"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "额定容量:3082mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "5.3.1 b) 额定容量、额定能量、充电限制电压、标称电压",
+                "quote": "电池组: 额定容量:3082mAh 额定能量:48.1Wh 充电限制电压: 18Vdc 标称电压: 15.6Vdc"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": 48.1,
+        "raw_value": "额定能量:48.1Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "5.3.1 b) 额定容量、额定能量、充电限制电压、标称电压",
+                "quote": "电池组: 额定容量:3082mAh 额定能量:48.1Wh 充电限制电压: 18Vdc 标称电压: 15.6Vdc"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 'CCC Report'；文件未提供典型/正常容量與典型/正常電池容量，故相應欄位為 null。"
+}
