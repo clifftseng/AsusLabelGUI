@@ -6,8 +6,8 @@ from processing_modes import shared_helpers as helpers
 
 import datetime
 
-def execute(log_callback, progress_callback, pdf_path, format_path=None, verbose=False):
-    """Processes a single PDF file with structured logging."""
+def execute(log_callback, progress_callback, pdf_path, format_path=None, verbose=False, pages_to_process=None):
+    """Processes a single PDF file with structured logging, optionally on specific pages."""
     log_callback(f"======== 開始執行 純ChatGPT 模式處理檔案: {os.path.basename(pdf_path)} ========")
     
     try:
@@ -36,11 +36,12 @@ def execute(log_callback, progress_callback, pdf_path, format_path=None, verbose
 
     base64_images = helpers.pdf_to_base64_images(
         pdf_path=pdf_path,
-        log_callback=log_callback, # Pass for internal errors
-        sub_progress_callback=conversion_progress_handler
+        log_callback=log_callback,
+        sub_progress_callback=conversion_progress_handler,
+        pages_to_process=pages_to_process # Pass the specific pages to the helper
     )
-    if base64_images is None:
-        log_callback(f"  [錯誤] 轉換 '{filename}' 失敗，跳過此檔案。")
+    if base64_images is None or not base64_images:
+        log_callback(f"  [錯誤] 轉換 '{filename}' 失敗或未找到有效頁面，跳過此檔案。")
         return None
     log_callback(f"    - 成功轉換 {len(base64_images)} 頁。")
 

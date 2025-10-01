@@ -1,0 +1,18 @@
+You are an expert document analyst. Your task is to identify the page numbers in a PDF document that are most likely to contain specific information.
+
+The document has a total of {TOTAL_PAGES} pages.
+
+I am looking for the following pieces of information:
+---
+{TARGET_FIELDS}
+---
+
+Based on the common structure of technical reports, certificates, and specification sheets, please return a JSON object containing a single key "most_likely_pages" with a list of the top 3 most probable page numbers (1-based) where this information can be found.
+
+Do not provide any explanation or additional text. Only return the JSON object.
+
+Example:
+If you believe pages 1, 3, and 8 are the most likely, you should return:
+{
+  "most_likely_pages": [1, 3, 8]
+}

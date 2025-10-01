@@ -4,6 +4,7 @@ import os
 import threading
 import time
 import logging
+import asyncio
 
 # Suppress verbose logging from Azure SDK & OpenAI
 logging.getLogger("azure.core.pipeline.policies.http_logging_policy").setLevel(logging.WARNING)
@@ -12,7 +13,7 @@ logging.getLogger("openai").setLevel(logging.WARNING)
 class ToolGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("ASUS Label 關鍵字資料比對工具 v0.1")
+        self.title("ASUS Label 關鍵字資料比對工具 v0.2 (Async)")
         self.geometry("500x600")
 
         # --- 變數區 ---
@@ -83,17 +84,19 @@ class ToolGUI(tk.Tk):
             self.log_text.insert(tk.END, f"{msg}\n")
             self.log_text.see(tk.END)
             self.log_text.config(state="disabled")
-        self.after(0, _update_log)
+        if self.winfo_exists():
+            self.after(0, _update_log)
 
     def show_help(self):
         help_text = """
-        歡迎使用 ASUS Label 關鍵字資料比對工具 v0.1
+        歡迎使用 ASUS Label 關鍵字資料比對工具 v0.2 (Async)
 
         核心邏輯已改為自動判斷，無需手動選擇大部分模式。
+        處理流程已改為非同步並行處理，能大幅提升處理多檔案時的效率。
 
         處理順序如下：
         1.  如果 PDF 只有一頁且無格式檔，自動使用 OWL-ViT + ChatGPT。
-        2.  如果 PDF 找得到對應的格式檔，則使用下方選擇的座標擷取模式。
+        2.  如果 PDF 找得到對應的格式檔，則使用座標擷取模式。
         3.  如果 PDF 為多頁且無格式檔，自動使用純 ChatGPT 分析。
 
         操作步驟：
@@ -106,7 +109,15 @@ class ToolGUI(tk.Tk):
 
     def start_processing_thread(self):
         self.start_button.config(state="disabled")
-        processing_thread = threading.Thread(target=self.processing_logic)
+        # Reset UI elements
+        self.result_file_path = None
+        self.open_result_button.config(state="disabled")
+        self.result_indicator.config(bg="lightgrey")
+        self.style.configure("Result.TButton", background="lightgrey")
+        self.progress_bar['value'] = 0
+        self.progress_label.config(text="0%")
+        
+        processing_thread = threading.Thread(target=self.run_async_processing)
         processing_thread.daemon = True
         processing_thread.start()
 
@@ -114,9 +125,10 @@ class ToolGUI(tk.Tk):
         def _update():
             self.progress_bar['value'] = percentage
             self.progress_label.config(text=f"{round(percentage)}%")
-        self.after(0, _update)
+        if self.winfo_exists():
+            self.after(0, _update)
 
-    def processing_logic(self):
+    def run_async_processing(self):
         try:
             self.log_message("處理程序開始...")
             self.log_message("正在載入核心處理模組(torch/transformers)，請稍候...")
@@ -129,7 +141,7 @@ class ToolGUI(tk.Tk):
             self.log_text.config(state="normal")
             self.log_text.delete('1.0', tk.END)
             self.log_text.config(state="disabled")
-            self.log_message("核心模組載入完畢，開始執行處理流程。")
+            self.log_message("核心模組載入完畢，開始執行非同步處理流程。")
 
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
             self.update_progress(0)
@@ -144,11 +156,12 @@ class ToolGUI(tk.Tk):
                 'verbose': self.verbose_log.get()
             }
             
-            self.result_file_path = processing_module.run_processing(
+            # Run the asyncio event loop
+            self.result_file_path = asyncio.run(processing_module.run_processing(
                 selected_options=selected_options,
                 log_callback=self.log_message,
                 progress_callback=self.update_progress
-            )
+            ))
 
             self.log_message("\n所有任務已成功完成！")
             self.after(0, lambda: self.result_indicator.config(bg="lightgreen"))
@@ -159,6 +172,8 @@ class ToolGUI(tk.Tk):
 
         except Exception as e:
             self.log_message(f"處理過程中發生嚴重錯誤，請查看日誌。詳細資訊: {e}")
+            import traceback
+            self.log_message(traceback.format_exc())
             self.after(0, lambda: self.result_indicator.config(bg="salmon") )
             self.after(0, lambda: self.style.configure("Result.TButton", background="salmon") )
         finally:
