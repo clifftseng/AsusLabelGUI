@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 1,
+      "bbox": [
+        174,
+        1065,
+        921,
+        205
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 1,
+      "bbox": [
+        182,
+        1072,
+        848,
+        197
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 1,
+      "bbox": [
+        172,
+        1070,
+        938,
+        197
+      ]
+    },
+    {
+      "field": "rated_energy_wh",
+      "page": 1,
+      "bbox": [
+        182,
+        1062,
+        919,
+        212
+      ]
+    }
+  ],
+  "spec_name": "PSE Report.md"
+}

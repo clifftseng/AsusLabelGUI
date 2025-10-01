@@ -37,24 +37,43 @@
 - 僅依檔名比對，不得從內文推斷或修飾分類名稱。
 - category 自動依檔名偵測。
 - 若檔名中包含下列任一分類字串，則 category = 該字串：
-  * BIS Letter
-  * BIS Report
-  * BSMI Cert
-  * BSMI Report
-  * CCC Cert
-  * CCC Report-1
-  * CCC Report-2
-  * KC Cert
-  * MIC Report
-  * revised rating BSMI Approval
-  * revised rating BSMI Report
-  * revised rating CB Cert-168836M1
-  * revised rating CB Cert-JPTUV-175169M1
-  * revised rating CB Report-168836M1
-  * revised rating CB Report-JPTUV-175169M1
-  * revised rating PSE Report
-  * revised rating UL NOA
-  * revised rating UL62368+2054 Report
+ [
+      "BIS Letter",
+      "BIS Registration",
+      "BIS Report",
+      "BSMI Cert",
+      "BSMI LOA",
+      "BSMI Report",
+      "CB CERT",
+      "CB Report",
+      "CCC Cert",
+      "CCC Report",
+      "CCC Report-1",
+      "CCC Report-2",
+      "CE Cert",
+      "CE Report",
+      "FCC Cert",
+      "FCC Report",
+      "IEC 61960",
+      "KC Cert",
+      "KC Report",
+      "MIC Report",
+      "PSE Report",
+      "TUV CDF",
+      "TUV Cert",
+      "UL2054 Report",
+      "UL62368 Coc",
+      "UL62368 Report",
+      "revised rating BSMI Approval",
+      "revised rating BSMI Report",
+      "revised rating CB Cert-168836M1",
+      "revised rating CB Cert-JPTUV-175169M1",
+      "revised rating CB Report-168836M1",
+      "revised rating CB Report-JPTUV-175169M1",
+      "revised rating PSE Report",
+      "revised rating UL NOA",
+      "revised rating UL62368+2054 Report"
+  ]
 - 若不在上述清單，category = null。
 
 [檔名比對實作細則]

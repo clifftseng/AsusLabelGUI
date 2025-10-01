@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1700,
+  "height": 2200,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 1,
+      "bbox": [
+        174,
+        830,
+        616,
+        44
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 1,
+      "bbox": [
+        172,
+        871,
+        869,
+        64
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 1,
+      "bbox": [
+        172,
+        873,
+        896,
+        69
+      ]
+    },
+    {
+      "field": "rated_energy_wh",
+      "page": 1,
+      "bbox": [
+        172,
+        873,
+        882,
+        62
+      ]
+    }
+  ],
+  "spec_name": "UL62368 Report.md"
+}

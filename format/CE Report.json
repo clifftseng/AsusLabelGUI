@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 7,
+      "bbox": [
+        206,
+        358,
+        612,
+        58
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 7,
+      "bbox": [
+        174,
+        524,
+        1369,
+        426
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 7,
+      "bbox": [
+        182,
+        524,
+        1355,
+        431
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 7,
+      "bbox": [
+        177,
+        526,
+        1367,
+        443
+      ]
+    },
+    {
+      "field": "rated_energy_wh",
+      "page": 7,
+      "bbox": [
+        174,
+        526,
+        1367,
+        436
+      ]
+    }
+  ],
+  "spec_name": "CE Report.md"
+}

@@ -12,8 +12,8 @@ logging.getLogger("openai").setLevel(logging.WARNING)
 class ToolGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("ASUS Label 處理工具 v0.6")
-        self.geometry("600x700")
+        self.title("ASUS Label 關鍵字資料比對工具 v0.1")
+        self.geometry("500x600")
 
         # --- 變數區 ---
         self.coord_mode = tk.StringVar(value="chatgpt_pos")
@@ -42,9 +42,9 @@ class ToolGUI(tk.Tk):
         self.progress_label = ttk.Label(progress_frame, text="0%")
         self.progress_label.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # 3. 選擇區
+        # 3. 模式選擇與設定 (Currently Hidden)
         options_frame = ttk.LabelFrame(self, text="3. 模式選擇與設定", padding=(10, 5))
-        options_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
+        # options_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew") # Kept hidden
         
         # Row for coord_mode
         ttk.Radiobutton(options_frame, text="ChatGPT + 座標", variable=self.coord_mode, value="chatgpt_pos").grid(row=0, column=0, padx=5, pady=2, sticky="w")
@@ -53,24 +53,24 @@ class ToolGUI(tk.Tk):
         # Row for other settings
         ttk.Checkbutton(options_frame, text="顯示詳細日誌 (Verbose Log)", variable=self.verbose_log).grid(row=1, column=0, columnspan=2, padx=5, pady=2, sticky="w")
 
-        # 4. 文字訊息Log區
-        log_frame = ttk.LabelFrame(self, text="4. Log訊息區", padding=(10, 5))
-        log_frame.grid(row=3, column=0, padx=10, pady=5, sticky="nsew")
-        log_frame.grid_columnconfigure(0, weight=1)
-        log_frame.grid_rowconfigure(0, weight=1)
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=8, state="disabled")
-        self.log_text.grid(row=0, column=0, sticky="nsew")
-        self.grid_rowconfigure(3, weight=1)
-
-        # 5. 結果區
-        result_frame = ttk.LabelFrame(self, text="5. 結果區", padding=(10, 5))
-        result_frame.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
+        # 3. 結果區 (Moved up)
+        result_frame = ttk.LabelFrame(self, text="3. 結果區", padding=(10, 5))
+        result_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
         result_frame.grid_columnconfigure(0, weight=3)
         result_frame.grid_columnconfigure(1, weight=1)
         self.result_indicator = tk.Frame(result_frame, bg="lightgrey", height=30)
         self.result_indicator.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
         self.open_result_button = ttk.Button(result_frame, text="打開結果", command=self.open_result_file, state="disabled", style="Result.TButton")
         self.open_result_button.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+
+        # 4. 文字訊息Log區 (Moved down)
+        log_frame = ttk.LabelFrame(self, text="4. Log訊息區", padding=(10, 5))
+        log_frame.grid(row=3, column=0, padx=10, pady=5, sticky="nsew")
+        log_frame.grid_columnconfigure(0, weight=1)
+        log_frame.grid_rowconfigure(0, weight=1)
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=3, state="disabled") # Height changed from 8 to 5
+        self.log_text.grid(row=0, column=0, sticky="nsew")
+        self.grid_rowconfigure(3, weight=1)
 
         self.style = ttk.Style()
         self.style.configure("Result.TButton", background="lightgrey")
@@ -87,7 +87,7 @@ class ToolGUI(tk.Tk):
 
     def show_help(self):
         help_text = """
-        歡迎使用 ASUS Label 處理工具 v0.6
+        歡迎使用 ASUS Label 關鍵字資料比對工具 v0.1
 
         核心邏輯已改為自動判斷，無需手動選擇大部分模式。
 

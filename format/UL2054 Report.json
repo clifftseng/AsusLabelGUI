@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1700,
+  "height": 2200,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 2,
+      "bbox": [
+        172,
+        591,
+        415,
+        151
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 2,
+      "bbox": [
+        587,
+        596,
+        419,
+        144
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 2,
+      "bbox": [
+        1011,
+        582,
+        481,
+        172
+      ]
+    },
+    {
+      "field": "rated_energy_wh",
+      "page": 2,
+      "bbox": [
+        1011,
+        589,
+        488,
+        147
+      ]
+    }
+  ],
+  "spec_name": "UL2054 Report.md"
+}

@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 3,
+      "bbox": [
+        48,
+        158,
+        1564,
+        865
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 3,
+      "bbox": [
+        45,
+        158,
+        1581,
+        870
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 3,
+      "bbox": [
+        52,
+        166,
+        1574,
+        865
+      ]
+    }
+  ],
+  "spec_name": "IEC 61960.md"
+}

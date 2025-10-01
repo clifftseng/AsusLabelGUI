@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 5,
+      "bbox": [
+        177,
+        283,
+        1372,
+        229
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 5,
+      "bbox": [
+        184,
+        534,
+        1360,
+        429
+      ]
+    },
+    {
+      "field": "typ_batt_capacity_wh",
+      "page": 5,
+      "bbox": [
+        177,
+        526,
+        1372,
+        431
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 5,
+      "bbox": [
+        177,
+        531,
+        1360,
+        424
+      ]
+    },
+    {
+      "field": "rated_energy_wh",
+      "page": 5,
+      "bbox": [
+        182,
+        531,
+        1355,
+        431
+      ]
+    }
+  ],
+  "spec_name": "FCC Report.md"
+}

@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "prompt_file": "prompt_target_v0.1.md",
+  "width": 1654,
+  "height": 2339,
+  "page_indexing": "absolute_1_based",
+  "bbox_spec": {
+    "units": "px",
+    "origin": "top_left",
+    "format": "xywh"
+  },
+  "hints": [
+    {
+      "field": "model_name",
+      "page": 4,
+      "bbox": [
+        437,
+        373,
+        468,
+        319
+      ]
+    },
+    {
+      "field": "nominal_voltage_v",
+      "page": 4,
+      "bbox": [
+        440,
+        370,
+        446,
+        317
+      ]
+    },
+    {
+      "field": "rated_capacity_mah",
+      "page": 4,
+      "bbox": [
+        440,
+        378,
+        460,
+        302
+      ]
+    },
+    {
+      "field": "rated_energy_wh",
+      "page": 4,
+      "bbox": [
+        445,
+        373,
+        463,
+        312
+      ]
+    }
+  ],
+  "spec_name": "CCC Report.md"
+}

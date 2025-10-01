@@ -55,7 +55,43 @@
    - 電壓通常帶單位 V/Vdc；容量 mAh；能量 Wh。若單位與欄位不符，視為候選值並記入 conflicts。
 10) **檔案分類規則**（僅依檔名比對；未命中= null）：
    - 若檔名（去副檔名、NFKC 正規化、大小寫不敏感、底線視同空白、連字號等價）包含下列任一完整詞則 category=該詞：
-     ["BIS Letter","BIS Report","BSMI Cert","BSMI Report","CCC Cert","CCC Report-1","CCC Report-2","KC Cert","MIC Report","revised rating BSMI Approval","revised rating BSMI Report","revised rating CB Cert-168836M1","revised rating CB Cert-JPTUV-175169M1","revised rating CB Report-168836M1","revised rating CB Report-JPTUV-175169M1","revised rating PSE Report","revised rating UL NOA","revised rating UL62368+2054 Report"]
+      [
+      "BIS Letter",
+      "BIS Registration",
+      "BIS Report",
+      "BSMI Cert",
+      "BSMI LOA",
+      "BSMI Report",
+      "CB CERT",
+      "CB Report",
+      "CCC Cert",
+      "CCC Report",
+      "CCC Report-1",
+      "CCC Report-2",
+      "CE Cert",
+      "CE Report",
+      "FCC Cert",
+      "FCC Report",
+      "IEC 61960",
+      "KC Cert",
+      "KC Report",
+      "MIC Report",
+      "PSE Report",
+      "TUV CDF",
+      "TUV Cert",
+      "UL2054 Report",
+      "UL62368 Coc",
+      "UL62368 Report",
+      "revised rating BSMI Approval",
+      "revised rating BSMI Report",
+      "revised rating CB Cert-168836M1",
+      "revised rating CB Cert-JPTUV-175169M1",
+      "revised rating CB Report-168836M1",
+      "revised rating CB Report-JPTUV-175169M1",
+      "revised rating PSE Report",
+      "revised rating UL NOA",
+      "revised rating UL62368+2054 Report"
+  ]
 11) **語言**：偵測主要語言（ISO 639-1）；若多語請於 notes 說明。
 12) **只輸出一次、且僅輸出 JSON**；不得輸出其它文字或多餘標點。
 
