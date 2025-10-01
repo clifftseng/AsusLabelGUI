@@ -38,6 +38,8 @@ REF_DIR = os.path.join(BASE_DIR, "ref")
 SINGLE_TEMPLATE_PATH = os.path.join(REF_DIR, "single.xlsx")
 TOTAL_TEMPLATE_PATH = os.path.join(REF_DIR, "total.xlsx")
 
+MODEL_DIR = os.path.join(BASE_DIR, "model")
+
 # --- Model & Client Cache ---
 CACHE = {}
 
@@ -56,15 +58,20 @@ def get_owlvit_model(log_callback=None):
         if log_callback: log_callback("  - 從快取中取得 OWL-ViT 模型。")
         return CACHE["owlvit"]
     
-    if log_callback: log_callback("  - 首次載入 OWL-ViT 模型 (可能需要幾分鐘)...")
+    if log_callback: log_callback(f"  - 首次從本地資料夾 {MODEL_DIR} 載入 OWL-ViT 模型...")
     time.sleep(0.1)
 
     from transformers import OwlViTProcessor, OwlViTForObjectDetection
     import torch
 
     device = get_device()
-    processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
-    model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(device)
+    try:
+        processor = OwlViTProcessor.from_pretrained(MODEL_DIR)
+        model = OwlViTForObjectDetection.from_pretrained(MODEL_DIR).to(device)
+    except OSError:
+        log_callback(f"[錯誤] 在 {MODEL_DIR} 中找不到模型檔案。請確認模型已下載至該位置。")
+        raise
+        
     model.eval()
     
     CACHE["owlvit"] = (model, processor)

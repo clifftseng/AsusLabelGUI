@@ -1,0 +1,64 @@
+{
+    "file": {
+        "name": "UL Report.pdf",
+        "category": "UL2054 Report",
+        "page_count": null
+    },
+    "language": "en",
+    "model_name": {
+        "value": "20HK2",
+        "raw_value": "20HK2",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:model_name.png",
+                "quote": "20HK2"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:nominal_voltage_v.png",
+                "quote": "15.6"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 64,
+        "raw_value": "4102mAh / 64Wh",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:typ_batt_capacity_wh.png",
+                "quote": "4102mAh / 64Wh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": 4102,
+        "raw_value": "4102mAh / 64Wh",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:typ_capacity_mah.png",
+                "quote": "4102mAh / 64Wh"
+            }
+        ]
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "頁碼未知，因僅提供切圖，故 evidence.page=null。文件僅提供 nominal（typical）容量與能量，未提供額定值。"
+}

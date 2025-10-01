@@ -1,0 +1,51 @@
+{
+    "processed_data": [
+        {
+            "file": {
+                "name": "20HK2 BSMI LOA.pdf",
+                "category": "BSMI LOA",
+                "page_count": 1
+            },
+            "language": "zh",
+            "model_name": {
+                "value": "20HK2",
+                "raw_value": "20HK2",
+                "evidence": [
+                    {
+                        "page": 1,
+                        "loc": "cropped_image:model_name.png",
+                        "quote": "20HK2"
+                    }
+                ]
+            },
+            "nominal_voltage_v": {
+                "value": null,
+                "raw_value": null,
+                "evidence": []
+            },
+            "typ_batt_capacity_wh": {
+                "value": null,
+                "raw_value": null,
+                "evidence": []
+            },
+            "typ_capacity_mah": {
+                "value": null,
+                "raw_value": null,
+                "evidence": []
+            },
+            "rated_capacity_mah": {
+                "value": null,
+                "raw_value": null,
+                "evidence": []
+            },
+            "rated_energy_wh": {
+                "value": null,
+                "raw_value": null,
+                "evidence": []
+            },
+            "conflicts": [],
+            "notes": "主要語言為中文，文件為BSMI進口授權通知書。僅在切圖中取得型號20HK2，其餘欄位在切圖與原頁面均未找到相關數值。"
+        }
+    ],
+    "file_name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 BSMI LOA.pdf"
+}

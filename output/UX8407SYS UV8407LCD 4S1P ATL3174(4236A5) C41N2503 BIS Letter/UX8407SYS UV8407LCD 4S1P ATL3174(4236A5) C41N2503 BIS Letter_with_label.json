@@ -1,0 +1,51 @@
+{
+    "file": {
+        "name": "BIS Letter.pdf",
+        "category": "BIS Letter",
+        "page_count": 1
+    },
+    "language": "en",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "cropped_image:model_name.png",
+                "quote": "[Brand -> ASUS, Models -> C41N2503]"
+            },
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [131,678,505,22]",
+                "quote": "[Brand -> ASUS, Models -> C41N2503]"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "頁碼採絕對 1-based。本文件僅提供型號資訊，未出現電壓、容量或能量數值。切圖與 hints 搜尋均未獲其他欄位值。"
+}

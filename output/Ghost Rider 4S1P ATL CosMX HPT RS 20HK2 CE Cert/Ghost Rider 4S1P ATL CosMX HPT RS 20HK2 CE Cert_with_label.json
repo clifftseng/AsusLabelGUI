@@ -1,0 +1,46 @@
+{
+    "file": {
+        "name": "ISL-24LE0552CE35 Certificate.pdf",
+        "category": null,
+        "page_count": null
+    },
+    "language": "en",
+    "model_name": {
+        "value": "20HK2",
+        "raw_value": "20HK2",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "cropped_image:model_name.png",
+                "quote": "Main Model : 20HK2"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "頁碼採絕對 1-based。本文件僅在切圖中提供了 model_name 欄位值，其餘欄位在切圖與 hints 搜尋均未獲值。"
+}

@@ -170,6 +170,7 @@ async def run_processing(selected_options, log_callback, progress_callback):
                 log_callback(msg)
             
             if result:
+                result['file_name'] = filename # Add filename to the result dict
                 final_results.append(result)
             
             log_callback(f"==================== [ {i + 1}/{total_files} ] - 完成 ====================\n")
