@@ -1,0 +1,56 @@
+{
+    "file": {
+        "name": "UX8407SYS UV8407LCD 4S1P ATL3174(4236A5) C41N2503 CCC Report-2.pdf",
+        "category": "CCC Report-2",
+        "page_count": 13
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "型号: C41N2503",
+        "evidence": [
+            {
+                "page": 3,
+                "loc": "表格 5.3.1 a) 产品名称、型号",
+                "quote": "电池组: 产品名称:锂离子电池组 型号: C41N2503"
+            },
+            {
+                "page": 3,
+                "loc": "bbox(top_left, xywh): [73,262,213,46]",
+                "quote": "电池组:\n产品名称: 锂离子电池组\n型号: C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類字串「CCC Report-2」。本次僅分析 model_name 欄位，其餘欄位未檢索。"
+}

@@ -1,0 +1,52 @@
+{
+    "file": {
+        "name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 UL2054 Report.pdf",
+        "category": "UL2054 Report",
+        "page_count": 15
+    },
+    "language": "en",
+    "model_name": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Electrical Rating table",
+                "quote": "Voltage (Nominal), Vdc\n15.6"
+            },
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [256,258,108,37]",
+                "quote": "15.6"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 UL2054 Report。文件提供了 nominal voltage 15.6 Vdc 的明確數值。其他欄位在提供的頁面中未找到。"
+}

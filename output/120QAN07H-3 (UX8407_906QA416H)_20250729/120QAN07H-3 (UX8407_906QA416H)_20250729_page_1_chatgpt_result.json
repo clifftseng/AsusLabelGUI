@@ -1,0 +1,81 @@
+{
+    "file": {
+        "name": "120QAN07H-3 (UX8407_906QA416H)_20250729.pdf",
+        "category": "Battery Label Artwork",
+        "page_count": 1
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "ASUS_UX8407 LCD_C41N2503_4C",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Title block / MODEL field",
+                "quote": "MODEL ASUS_UX8407 LCD_C41N2503_4C"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "+15.6V",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Battery label print area",
+                "quote": "Rating:+15.6V == 49.5Wh"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 49.5,
+        "raw_value": "49.5Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Battery label print area",
+                "quote": "Rating:+15.6V == 49.5Wh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": 3174,
+        "raw_value": "3174mAh(Typical)",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Battery label print area",
+                "quote": "Capacity : 3174mAh(Typical) / 3082mAh(Rated)"
+            }
+        ]
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082mAh(Rated)",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Battery label print area",
+                "quote": "Capacity : 3174mAh(Typical) / 3082mAh(Rated)"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": 48.1,
+        "raw_value": "48.1Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Revision history description",
+                "quote": "Battery capacity change to 49.5Wh; Rated capacity: 48.1Wh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "以檔名比對，命中分類 Battery Label Artwork。文件含中英文混合，主要語言為中文。"
+}

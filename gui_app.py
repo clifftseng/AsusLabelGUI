@@ -2,23 +2,16 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import os
 import threading
-import time
-import logging
 import asyncio
-
-# Suppress verbose logging from Azure SDK & OpenAI
-logging.getLogger("azure.core.pipeline.policies.http_logging_policy").setLevel(logging.WARNING)
-logging.getLogger("openai").setLevel(logging.WARNING)
+import processing_module # <-- Import the new module
 
 class ToolGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("ASUS Label 關鍵字資料比對工具 v0.2 (Async)")
+        self.title("ASUS Label 關鍵字資料比對工具 v0.4")
         self.geometry("500x600")
 
         # --- 變數區 ---
-        self.coord_mode = tk.StringVar(value="chatgpt_pos")
-        self.verbose_log = tk.BooleanVar(value=False)
         self.result_file_path = None
 
         # --- Layout ---
@@ -43,18 +36,7 @@ class ToolGUI(tk.Tk):
         self.progress_label = ttk.Label(progress_frame, text="0%")
         self.progress_label.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # 3. 模式選擇與設定 (Currently Hidden)
-        options_frame = ttk.LabelFrame(self, text="3. 模式選擇與設定", padding=(10, 5))
-        # options_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew") # Kept hidden
-        
-        # Row for coord_mode
-        ttk.Radiobutton(options_frame, text="ChatGPT + 座標", variable=self.coord_mode, value="chatgpt_pos").grid(row=0, column=0, padx=5, pady=2, sticky="w")
-        ttk.Radiobutton(options_frame, text="OCR + 座標 (尚未實作)", variable=self.coord_mode, value="ocr_pos", state="disabled").grid(row=0, column=1, padx=5, pady=2, sticky="w")
-
-        # Row for other settings
-        ttk.Checkbutton(options_frame, text="顯示詳細日誌 (Verbose Log)", variable=self.verbose_log).grid(row=1, column=0, columnspan=2, padx=5, pady=2, sticky="w")
-
-        # 3. 結果區 (Moved up)
+        # 3. 結果區
         result_frame = ttk.LabelFrame(self, text="3. 結果區", padding=(10, 5))
         result_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
         result_frame.grid_columnconfigure(0, weight=3)
@@ -64,12 +46,12 @@ class ToolGUI(tk.Tk):
         self.open_result_button = ttk.Button(result_frame, text="打開結果", command=self.open_result_file, state="disabled", style="Result.TButton")
         self.open_result_button.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
-        # 4. 文字訊息Log區 (Moved down)
+        # 4. 文字訊息Log區
         log_frame = ttk.LabelFrame(self, text="4. Log訊息區", padding=(10, 5))
         log_frame.grid(row=3, column=0, padx=10, pady=5, sticky="nsew")
         log_frame.grid_columnconfigure(0, weight=1)
         log_frame.grid_rowconfigure(0, weight=1)
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=3, state="disabled") # Height changed from 8 to 5
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=3, state="disabled")
         self.log_text.grid(row=0, column=0, sticky="nsew")
         self.grid_rowconfigure(3, weight=1)
 
@@ -89,15 +71,7 @@ class ToolGUI(tk.Tk):
 
     def show_help(self):
         help_text = """
-        歡迎使用 ASUS Label 關鍵字資料比對工具 v0.2 (Async)
-
-        核心邏輯已改為自動判斷，無需手動選擇大部分模式。
-        處理流程已改為非同步並行處理，能大幅提升處理多檔案時的效率。
-
-        處理順序如下：
-        1.  如果 PDF 只有一頁且無格式檔，自動使用 OWL-ViT + ChatGPT。
-        2.  如果 PDF 找得到對應的格式檔，則使用座標擷取模式。
-        3.  如果 PDF 為多頁且無格式檔，自動使用純 ChatGPT 分析。
+        歡迎使用 ASUS Label 關鍵字資料比對工具 v0.4
 
         操作步驟：
         1. 將所有要處理的 PDF 檔案放入程式目錄下的 `input` 資料夾中。
@@ -117,6 +91,7 @@ class ToolGUI(tk.Tk):
         self.progress_bar['value'] = 0
         self.progress_label.config(text="0%")
         
+        # Run the actual async processing in a separate thread
         processing_thread = threading.Thread(target=self.run_async_processing)
         processing_thread.daemon = True
         processing_thread.start()
@@ -131,28 +106,16 @@ class ToolGUI(tk.Tk):
     def run_async_processing(self):
         try:
             self.log_message("處理程序開始...")
-            import processing_module
-
-            # Clear log before starting the main process messages
             self.log_text.config(state="normal")
             self.log_text.delete('1.0', tk.END)
             self.log_text.config(state="disabled")
-            self.log_message("處理程序開始執行非同步處理流程。")
+            self.log_message("正在執行非同步處理流程...")
 
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
             self.update_progress(0)
 
-            # 使用 processing_modes.shared_helpers 中的 BASE_PATH 來確保路徑正確
-            from processing_modes.shared_helpers import BASE_PATH
-            input_dir = os.path.join(BASE_PATH, "input")
-            if not os.path.exists(input_dir):
-                os.makedirs(input_dir)
-                self.log_message(f"'{input_dir}' 資料夾不存在，已自動建立。")
-
-            selected_options = {
-                'coord_mode': self.coord_mode.get(),
-                'verbose': self.verbose_log.get()
-            }
+            # Define selected_options (currently empty, can be expanded later)
+            selected_options = {}
             
             # Run the asyncio event loop
             self.result_file_path = asyncio.run(processing_module.run_processing(
@@ -169,14 +132,14 @@ class ToolGUI(tk.Tk):
                 self.after(0, lambda: self.open_result_button.config(state="normal"))
 
         except Exception as e:
-            self.log_message(f"處理過程中發生嚴重錯誤，請查看日誌。詳細資訊: {e}")
             import traceback
+            self.log_message(f"處理過程中發生嚴重錯誤: {e}")
             self.log_message(traceback.format_exc())
-            self.after(0, lambda: self.result_indicator.config(bg="salmon") )
-            self.after(0, lambda: self.style.configure("Result.TButton", background="salmon") )
+            self.after(0, lambda: self.result_indicator.config(bg="salmon"))
+            self.after(0, lambda: self.style.configure("Result.TButton", background="salmon"))
         finally:
             self.log_message("處理程序結束。")
-            self.after(0, lambda: self.start_button.config(state="normal") )
+            self.after(0, lambda: self.start_button.config(state="normal"))
 
     def open_result_file(self):
         if self.result_file_path:
@@ -187,9 +150,9 @@ class ToolGUI(tk.Tk):
                     self.log_message(f"[錯誤] 無法打開檔案: {e}")
                     messagebox.showerror("打開失敗", f"無法打開檔案:\n{self.result_file_path}\n\n錯誤: {e}")
             else:
-                messagebox.showwarning("找不到檔案", "結果檔案不存在，可能尚未生成或已被移動。" )
+                messagebox.showwarning("找不到檔案", "結果檔案不存在，可能尚未生成或已被移動。")
         else:
-            messagebox.showwarning("找不到檔案", "結果檔案路徑未設定，請先執行處理程序。" )
+            messagebox.showwarning("找不到檔案", "結果檔案路徑未設定，請先執行處理程序。")
 
 if __name__ == "__main__":
     app = ToolGUI()

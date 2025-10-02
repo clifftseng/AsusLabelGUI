@@ -1,0 +1,56 @@
+{
+    "file": {
+        "name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 TUV CDF.pdf",
+        "category": "TUV CDF",
+        "page_count": 4
+    },
+    "language": "en",
+    "model_name": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6 Vdc",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "Rating section",
+                "quote": "Voltage: 15.6 Vdc, 4102 mAh / 64 Wh"
+            },
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [424,0,512,512]",
+                "quote": "Voltage: 15.6 Vdc, 4102 mAh / 64 Wh"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 'TUV CDF'。文件提供的 'Voltage: 15.6 Vdc' 被視為 nominal voltage。其他欄位在提供的頁面中未找到明確值。"
+}

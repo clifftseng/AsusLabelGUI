@@ -1,0 +1,51 @@
+{
+    "file": {
+        "name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 TUV CDF.pdf",
+        "category": "TUV CDF",
+        "page_count": 4
+    },
+    "language": "en",
+    "model_name": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 4102,
+        "raw_value": "4102 mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [419,0,512,512]",
+                "quote": "Voltage: 15.6 Vdc, 4102 mAh / 64 Wh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 'TUV CDF'；文件提供的 '4102 mAh' 位於 Rating 欄位，視為額定容量。其他欄位在提供的內容中未找到明確數值。"
+}

@@ -1,0 +1,56 @@
+{
+    "file": {
+        "name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 UL2054 Report.pdf",
+        "category": "UL2054 Report",
+        "page_count": 15
+    },
+    "language": "en",
+    "model_name": {
+        "value": "20HK2",
+        "raw_value": "20HK2",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "ELECTRICAL RATING table / cropped bbox(top_left, xywh): [0,0,415,151]",
+                "quote": "Model\n20HK2"
+            },
+            {
+                "page": 1,
+                "loc": "DESCRIPTION section",
+                "quote": "Unlisted Component - Rechargeable Li-ion Battery, Model 20HK2."
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對命中分類 UL2054 Report。本次僅針對 model_name 欄位進行分析與抽取。"
+}

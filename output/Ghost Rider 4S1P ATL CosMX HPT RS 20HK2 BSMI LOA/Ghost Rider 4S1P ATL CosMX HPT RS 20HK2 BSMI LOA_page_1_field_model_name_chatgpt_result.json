@@ -1,0 +1,56 @@
+{
+    "file": {
+        "name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 BSMI LOA.pdf",
+        "category": "BSMI LOA",
+        "page_count": 1
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "20HK2",
+        "raw_value": "型式: 20HK2",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [431,0,512,512]",
+                "quote": "型式: 20HK2"
+            },
+            {
+                "page": 1,
+                "loc": "Type field in product description section",
+                "quote": "型式: Type 20HK2"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "以檔名比對，命中分類 'BSMI LOA'。文件僅提供型號資訊，其他欄位未出現相關數值。"
+}

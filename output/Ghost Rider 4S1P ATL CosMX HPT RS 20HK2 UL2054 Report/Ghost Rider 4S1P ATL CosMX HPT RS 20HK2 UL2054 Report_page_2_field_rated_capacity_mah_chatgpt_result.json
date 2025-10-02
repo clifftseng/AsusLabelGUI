@@ -1,0 +1,69 @@
+{
+    "file": {
+        "name": "Ghost Rider 4S1P ATL CosMX HPT RS 20HK2 UL2054 Report.pdf",
+        "category": "UL2054 Report",
+        "page_count": 15
+    },
+    "language": "en",
+    "model_name": {
+        "value": "20HK2",
+        "raw_value": "Model 20HK2",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "DESCRIPTION section",
+                "quote": "Unlisted Component - Rechargeable Li-ion Battery, Model 20HK2."
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "ELECTRICAL RATING table",
+                "quote": "Voltage (Nominal) , Vdc\n15.6"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "derived_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 4102,
+        "raw_value": "4102mAh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "ELECTRICAL RATING table",
+                "quote": "Capacity (Nominal), mAh\n4102mAh / 64Wh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": 64,
+        "raw_value": "64Wh",
+        "derived_value": null,
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "ELECTRICAL RATING table",
+                "quote": "Capacity (Nominal), mAh\n4102mAh / 64Wh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "文件中僅提供 'Capacity (Nominal)'，未區分典型與額定容量，依規則將其視為額定容量與額定能量。檔名比對命中 'UL2054 Report' 分類。"
+}

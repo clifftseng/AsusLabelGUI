@@ -1,13 +1,6 @@
 openai>=1.0.0
-httpx>=0.23.0
 python-dotenv
 PyMuPDF
-openpyxl
+azure-ai-formrecognizer
 Pillow
-torch
-torchvision
-transformers
-opencv-python-headless
-numpy<2.0,>=1.21.0
-tqdm
-pycocotools
+openpyxl
