@@ -1,3 +1,5 @@
+
+
 import os
 import base64
 import json
@@ -15,6 +17,7 @@ from PIL import Image
 from collections import Counter
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
+from pathlib import Path
 
 # --- Configuration ---
 load_dotenv()
@@ -55,7 +58,7 @@ def get_device(device_str: str = None):
 
 def get_owlvit_model(log_callback=None):
     if "owlvit" in CACHE:
-        if log_callback: log_callback("  - 從快取中取得 OWL-ViT 模型。")
+        if log_callback: log_callback("  - 從快取中取得 OWL-ViT 模型")
         return CACHE["owlvit"]
     
     from transformers import OwlViTProcessor, OwlViTForObjectDetection
@@ -68,30 +71,30 @@ def get_owlvit_model(log_callback=None):
         if log_callback: log_callback(f"  - 正在從本地資料夾 {MODEL_DIR} 載入 OWL-ViT 模型...")
         processor = OwlViTProcessor.from_pretrained(MODEL_DIR)
         model = OwlViTForObjectDetection.from_pretrained(MODEL_DIR).to(device)
-        if log_callback: log_callback("  - 本地模型載入成功。")
+        if log_callback: log_callback("  - 本地模型載入成功")
 
     except OSError:
         # 若本地載入失敗 (例如資料夾不存在)，則從網路下載並儲存
-        if log_callback: log_callback(f"[警告] 在 {MODEL_DIR} 中找不到模型。將從網路下載並儲存以供未來使用。")
+        if log_callback: log_callback(f"[警告] 在 {MODEL_DIR} 中找不到模型。將從網路下載並儲存以供未來使用")
         if log_callback: log_callback("  - 首次下載，請稍候 (可能需要幾分鐘)...")
         
         model_name = "google/owlvit-base-patch32"
         processor = OwlViTProcessor.from_pretrained(model_name)
         model = OwlViTForObjectDetection.from_pretrained(model_name) # 下載
         
-        if log_callback: log_callback("  - 模型下載成功，正在儲存到本地資料夾...")
+        if log_callback: log_callback("  - 模型下載成功، 正在儲存到本地資料夾...")
         if not os.path.exists(MODEL_DIR):
             os.makedirs(MODEL_DIR)
         processor.save_pretrained(MODEL_DIR) # 儲存以供下次使用
         model.save_pretrained(MODEL_DIR)
-        if log_callback: log_callback(f"  - 模型已成功儲存至 {MODEL_DIR}。")
+        if log_callback: log_callback(f"  - 模型已成功儲存至 {MODEL_DIR} ")
         
         model = model.to(device) # 將下載好的模型移至正確裝置
         
     model.eval()
     
     CACHE["owlvit"] = (model, processor)
-    if log_callback: log_callback("  - OWL-ViT 模型載入並快取成功。")
+    if log_callback: log_callback("  - OWL-ViT 模型載入並快取成功")
     return model, processor
 
 def get_azure_openai_client():
@@ -111,7 +114,7 @@ def get_di_client(log_callback=None):
     if log_callback: log_callback("  - 正在建立 Document Intelligence 用戶端...")
     client = DocumentAnalysisClient(endpoint=DI_ENDPOINT, credential=AzureKeyCredential(DI_KEY))
     CACHE["di_client"] = client
-    if log_callback: log_callback("  - Document Intelligence 用戶端建立成功。")
+    if log_callback: log_callback("  - Document Intelligence 用戶端建立成功")
     return client
 
 def preload_models(log_callback=None):
@@ -120,8 +123,6 @@ def preload_models(log_callback=None):
 def ensure_template_files_exist(log_callback):
     if not os.path.exists(EXCEL_OUTPUT_DIR):
         os.makedirs(EXCEL_OUTPUT_DIR)
-    # This function is now less critical as the save functions can also create the files,
-    # but it's good for pre-run setup.
     target_total_path = os.path.join(EXCEL_OUTPUT_DIR, os.path.basename(TOTAL_TEMPLATE_PATH))
     if not os.path.exists(target_total_path):
         try:
@@ -146,7 +147,7 @@ def analyze_image_with_di(image_path, log_callback):
         with open(image_path, "rb") as f:
             poller = di_client.begin_analyze_document("prebuilt-document", document=f)
         result = poller.result()
-        log_callback(f"    - [DI] 分析完成。")
+        log_callback(f"    - [DI] 分析完成")
         return result.to_dict()
     except Exception as e:
         log_callback(f"    - [DI][錯誤] 分析圖片時發生錯誤: {e}")
@@ -161,7 +162,7 @@ def _query_openai_with_retry(log_callback, **kwargs):
         try:
             client = get_azure_openai_client()
             response = client.chat.completions.create(**kwargs)
-            log_callback("      - AI 回應接收成功。")
+            log_callback("      - AI 回應接收成功")
             return response
         except RateLimitError as e:
             wait_time = base_delay * (2 ** attempt)
@@ -171,7 +172,7 @@ def _query_openai_with_retry(log_callback, **kwargs):
             log_callback(f"    [錯誤] AI API 呼叫時發生非預期錯誤: {e}")
             return None # For non-retryable errors
     
-    log_callback(f"    [錯誤] 達到最大重試次數 ({max_retries}) 後，API 呼叫仍然失敗。")
+    log_callback(f"    [錯誤] 達到最大重試次數 ({max_retries}) 後، API 呼叫仍然失敗")
     return None
 
 def query_chatgpt_vision_api(system_prompt, user_content, log_callback):
@@ -211,8 +212,8 @@ def query_chatgpt_text_api(system_prompt, user_prompt, log_callback):
     )
     if response:
         try:
-            # Clean the response and parse JSON
-            response_str = response.choices[0].message.content.strip()
+            response_str = response.choices[0].message.content
+            # 直接載入 JSON 字串，因為 response_format={"type": "json_object"} 應確保其為有效的 JSON
             return json.loads(response_str)
         except (json.JSONDecodeError, IndexError, KeyError) as e:
             log_callback(f"    [錯誤] 解析純文字 API 的 JSON 回應時失敗: {e}")
@@ -220,9 +221,7 @@ def query_chatgpt_text_api(system_prompt, user_prompt, log_callback):
             return None
     return None
 
-
 def get_all_format_keys(log_callback):
-    """Scans all .json files in the format directory and collects a unique set of keys."""
     if "all_format_keys" in CACHE:
         return CACHE["all_format_keys"]
 
@@ -234,52 +233,96 @@ def get_all_format_keys(log_callback):
             file_path = os.path.join(FORMAT_DIR, file_name)
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                for key in data.keys():
-                    all_keys.add(key)
-        log_callback(f"  - 共收集到 {len(all_keys)} 個獨特欄位。")
+            if isinstance(data.get('hints'), list):
+                for hint in data['hints']:
+                    if isinstance(hint, dict) and 'field' in hint:
+                        all_keys.add(hint['field'])
+        log_callback(f"  - 共收集到 {len(all_keys)} 個獨特欄位。".encode('cp950', errors='replace').decode('cp950'))
         CACHE["all_format_keys"] = all_keys
         return all_keys
     except Exception as e:
-        log_callback(f"[錯誤] 讀取格式檔以收集鍵時發生錯誤: {e}")
-        return set() # Return empty set on failure
+        safe_error_msg = str(e).encode('cp950', errors='replace').decode('cp950')
+        log_callback(f"[錯誤] 讀取格式檔以收集鍵時發生錯誤: {safe_error_msg}")
+        return set()
 
-def predict_relevant_pages(total_pages, log_callback):
+
+def predict_relevant_pages(pdf_path, log_callback):
     """Uses ChatGPT to predict the most relevant pages in a document."""
     log_callback("  - 開始使用 ChatGPT 預測相關頁面...")
     try:
-        # 1. Get all possible target fields
+        import fitz
+        doc = fitz.open(pdf_path)
+        total_pages = len(doc)
+        doc.close()
+
+        #（可留可去）收集欄位，僅作為日後擴充；目前的 prompt 不使用 {TARGET_FIELDS}
         target_fields = get_all_format_keys(log_callback)
         if not target_fields:
-            log_callback("  - [警告] 找不到任何目標欄位，無法進行頁面預測。")
+            log_callback("  - [警告] 找不到任何目標欄位、無法進行頁面預測")
             return None
-        
-        target_fields_str = "\n".join(f"- {key}" for key in sorted(list(target_fields)))
 
-        # 2. Read the prediction prompt
         prompt_template = read_prompt_file(os.path.join(PROMPT_DIR, "prompt_page_prediction.txt"))
         if not prompt_template:
-            log_callback("  - [錯誤] 找不到頁面預測的 Prompt 檔案。")
+            log_callback("  - [錯誤] 找不到頁面預測的 Prompt 檔案")
             return None
 
-        # 3. Format the prompt
-        system_prompt = prompt_template.format(TOTAL_PAGES=total_pages, TARGET_FIELDS=target_fields_str)
+        # ⚠ 只替換我們真的需要的占位符，避免 format 吃掉 JSON 大括號
+        system_prompt = prompt_template.replace("{TOTAL_PAGES}", str(total_pages))
+        # 若未來你的模板真的加入 {TARGET_FIELDS}，這行會安全替換；現在不影響
+        system_prompt = system_prompt.replace("{TARGET_FIELDS}", "\n".join(sorted(target_fields)))
+
         user_prompt = "Please provide the JSON object with the most likely pages based on the system prompt."
 
-        # 4. Call the API
         response_json = query_chatgpt_text_api(system_prompt, user_prompt, log_callback)
 
-        # 5. Parse and return the result
-        if response_json and 'most_likely_pages' in response_json and isinstance(response_json['most_likely_pages'], list):
-            pages = response_json['most_likely_pages']
-            log_callback(f"  - ChatGPT 建議的頁面為: {pages}")
-            return pages
-        else:
-            log_callback("  - [警告] ChatGPT 回應的格式不正確或未包含有效頁面。")
+        log_callback(f"--- DEBUG: response_json 的型別: {type(response_json)} ---")
+        log_callback(f"--- DEBUG: response_json 的內容 (repr): {repr(response_json).encode('cp950', errors='replace').decode('cp950')} ---")
+
+        if not isinstance(response_json, dict):
+            log_callback("  - [警告] ChatGPT 沒有回傳有效的 JSON 物件")
             return None
+
+        # 1) 先拿「官方」匯總欄位
+        pages = []
+        if isinstance(response_json.get("overall_top_pages"), list):
+            pages = response_json["overall_top_pages"]
+
+        # 2) 若沒有 overall_top_pages，就從 fields.*.pages 做投票聚合
+        if (not pages) and isinstance(response_json.get("fields"), dict):
+            from collections import Counter
+            counter = Counter()
+            for field_data in response_json["fields"].values():
+                if isinstance(field_data, dict) and isinstance(field_data.get("pages"), list):
+                    for p in field_data["pages"]:
+                        if isinstance(p, int):
+                            counter[p] += 1
+            pages = [p for p, _ in counter.most_common(3)]
+
+        # 3) 最後才回退到舊鍵名（向後相容）
+        if (not pages) and isinstance(response_json.get("most_likely_pages"), list):
+            pages = response_json["most_likely_pages"]
+
+        # 合法性檢查：1-based 且不能超界；去重後保序取前 3
+        def valid(p): return isinstance(p, int) and (1 <= p <= total_pages)
+        seen, cleaned = set(), []
+        for p in pages:
+            if valid(p) and p not in seen:
+                seen.add(p)
+                cleaned.append(p)
+            if len(cleaned) >= 3:
+                break
+
+        if cleaned:
+            log_callback(f"  - ChatGPT 建議的頁面為: {cleaned}")
+            return cleaned
+
+        log_callback("  - [警告] ChatGPT 回應的格式正確但沒有可用頁面")
+        return None
 
     except Exception as e:
         log_callback(f"[錯誤] 預測相關頁面時發生未預期錯誤: {e}")
         return None
+
 
 def read_prompt_file(file_path):
     try:
@@ -304,15 +347,14 @@ def pdf_to_base64_images(pdf_path, log_callback, sub_progress_callback=None, pag
         total_pages_in_doc = len(doc)
 
         if pages_to_process:
-            # Filter pages to ensure they are within the valid range
             target_pages = [p - 1 for p in pages_to_process if 0 < p <= total_pages_in_doc]
             if not target_pages:
-                log_callback(f"  - [警告] 指定的頁面 {pages_to_process} 在 PDF 中均無效 (總頁數: {total_pages_in_doc})。")
+                log_callback(f"  - [警告] 指定的頁面 {pages_to_process} 在 PDF 中均無效 (總頁數: {total_pages_in_doc}) ")
                 return []
             log_callback(f"  - 將處理指定的 {len(target_pages)} 頁: {[p + 1 for p in target_pages]}")
         else:
             target_pages = range(total_pages_in_doc)
-            log_callback(f"  - 將處理所有 {total_pages_in_doc} 頁。")
+            log_callback(f"  - 將處理所有 {total_pages_in_doc} 頁 ")
 
         total_pages_to_convert = len(target_pages)
         for i, page_num in enumerate(target_pages):
@@ -358,9 +400,8 @@ def format_conflicts(conflicts_list):
     return json.dumps(conflicts_list, ensure_ascii=False, indent=2)
 
 def save_single_excel(processed_data_wrapper, output_folder, log_callback):
-    """Saves the result of a single file to its own dedicated Excel file."""
     if not processed_data_wrapper or 'processed_data' not in processed_data_wrapper or not processed_data_wrapper['processed_data']:
-        log_callback(f"[警告] 無法為檔案 {processed_data_wrapper.get('file_name', '未知')} 儲存 Excel，因為沒有有效的處理資料。")
+        log_callback(f"[警告] 無法為檔案 {processed_data_wrapper.get('file_name', '未知')} 儲存 Excel، 因為沒有有效的處理資料 ")
         return
 
     original_filename = processed_data_wrapper['file_name']
@@ -379,8 +420,6 @@ def save_single_excel(processed_data_wrapper, output_folder, log_callback):
 
     try:
         single_output_path = os.path.join(output_folder, f"single_{file_name_without_ext}.xlsx")
-        # We don't copy the template here, as it should be pre-copied
-        # For safety, let's ensure the base template exists to be copied if needed, though the main module should handle it.
         if not os.path.exists(single_output_path):
              shutil.copy(SINGLE_TEMPLATE_PATH, single_output_path)
 
@@ -412,11 +451,9 @@ def save_single_excel(processed_data_wrapper, output_folder, log_callback):
         log_callback(f"[錯誤] 儲存單一 Excel 檔案時發生錯誤 ({original_filename}): {e}")
 
 def save_total_excel(all_results, output_folder, log_callback):
-    """Saves all processed results into a single summary Excel file."""
     log_callback("--- 開始儲存總表 Excel ---")
     try:
         total_output_path = os.path.join(output_folder, "total.xlsx")
-        # This should have been pre-copied by the main module
         if not os.path.exists(total_output_path):
             shutil.copy(TOTAL_TEMPLATE_PATH, total_output_path)
 
@@ -451,7 +488,7 @@ def save_total_excel(all_results, output_folder, log_callback):
             total_ws.append(row_data)
 
         total_wb.save(total_output_path)
-        log_callback("  - 總表 total.xlsx 已儲存。")
+        log_callback("  - 總表 total.xlsx 已儲存 ")
         return total_output_path # Return path for further processing
 
     except Exception as e:
@@ -480,11 +517,11 @@ def apply_highlighting_rules(excel_path, log_callback):
             artwork_row_indices.append(row_idx)
 
     if ws.max_row <= 1:
-        log_callback("[資訊] Excel 中沒有資料，跳過標色。")
+        log_callback("[資訊] Excel 中沒有資料، 跳過標色 ")
         return
 
     if len(artwork_row_indices) == 1:
-        log_callback("[規則 1] 偵測到單一 'Battery Label Artwork'，以此為標準。")
+        log_callback("[規則 1] 偵測到單一 'Battery Label Artwork'، 以此為標準 ")
         standard_row_idx = artwork_row_indices[0]
         for col_idx in columns_to_check_indices:
             standard_cell = ws.cell(row=standard_row_idx, column=col_idx)
@@ -496,17 +533,17 @@ def apply_highlighting_rules(excel_path, log_callback):
                     cell.fill = red_fill
 
     elif len(artwork_row_indices) > 1:
-        log_callback("[規則 2] 偵測到多筆 'Battery Label Artwork'，進行內部比對。")
+        log_callback("[規則 2] 偵測到多筆 'Battery Label Artwork'، 進行內部比對 ")
         for col_idx in columns_to_check_indices:
             artwork_values = [ws.cell(row=r_idx, column=col_idx).value for r_idx in artwork_row_indices]
             if len(set(artwork_values)) > 1:
                 header_name = ws.cell(row=1, column=col_idx).value
-                log_callback(f"  - 欄位 '{header_name}' 在 Artwork 中發現不一致，全部標紅。")
+                log_callback(f"  - 欄位 '{header_name}' 在 Artwork 中發現不一致، 全部標紅 ")
                 for r_idx in artwork_row_indices:
                     ws.cell(row=r_idx, column=col_idx).fill = red_fill
 
     else: # No artwork rows
-        log_callback("[規則 3] 未偵測到 'Battery Label Artwork'，採用多數決。")
+        log_callback("[規則 3] 未偵測到 'Battery Label Artwork'، 採用多數決 ")
         for col_idx in columns_to_check_indices:
             col_values = [ws.cell(row=r_idx, column=col_idx).value for r_idx in range(2, ws.max_row + 1) if ws.cell(row=r_idx, column=col_idx).value is not None]
             if not col_values: continue
@@ -514,16 +551,95 @@ def apply_highlighting_rules(excel_path, log_callback):
             most_common = value_counts.most_common()
             header_name = ws.cell(row=1, column=col_idx).value
             if len(most_common) > 1 and most_common[0][1] == most_common[1][1]:
-                log_callback(f"  - 欄位 '{header_name}' 出現平手，整欄標紅。")
+                log_callback(f"  - 欄位 '{header_name}' 出現平手، 整欄標紅 ")
                 for r_idx in range(2, ws.max_row + 1):
                     ws.cell(row=r_idx, column=col_idx).fill = red_fill
             else:
                 majority_value = most_common[0][0]
-                log_callback(f"  - 欄位 '{header_name}' 的多數值為 '{majority_value}'。")
+                log_callback(f"  - 欄位 '{header_name}' 的多數值為 '{majority_value}' ")
                 for r_idx in range(2, ws.max_row + 1):
                     cell = ws.cell(row=r_idx, column=col_idx)
                     if cell.value != majority_value:
                         cell.fill = red_fill
 
     wb.save(excel_path)
-    log_callback("成功儲存已標色的 Excel 檔案。")
+    log_callback("成功儲存已標色的 Excel 檔案 ")
+
+
+# --- NEW SHARED FUNCTION ---
+def process_pages_via_screenshot_di_chatgpt(pdf_path, pages_to_process, output_dir, log_callback):
+    """
+    A shared helper function that takes a list of pages, screenshots them,
+    runs DI, and then runs ChatGPT Vision analysis.
+    """
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception as e:
+        log_callback(f"[錯誤] 開啟 PDF 檔案失敗: {e}")
+        return []
+
+    os.makedirs(output_dir, exist_ok=True)
+    pdf_stem = Path(pdf_path).stem
+    
+    final_chatgpt_results = []
+
+    # 讀取通用的 prompt 檔案
+    system_prompt = read_prompt_file(os.path.join(PROMPT_DIR, "prompt_system.txt"))
+    user_prompt_template = read_prompt_file(os.path.join(PROMPT_DIR, "prompt_user.txt"))
+
+    if not all([system_prompt, user_prompt_template]):
+        log_callback("[錯誤] 找不到 prompt_system.txt 或 prompt_user.txt، 處理終止 ")
+        doc.close()
+        return []
+
+    for page_num in pages_to_process:
+        page_index = page_num - 1
+        if 0 <= page_index < len(doc):
+            try:
+                # --- 步驟 a: 截圖 ---
+                page = doc.load_page(page_index)
+                pix = page.get_pixmap(dpi=200)
+                output_filename = f"{pdf_stem}_page_{page_num}.png"
+                output_filepath = os.path.join(output_dir, output_filename)
+                pix.save(output_filepath)
+                log_callback(f"  - 已儲存截圖: {output_filename}")
+
+                # --- 步驟 b: DI 分析 ---
+                log_callback(f"  - 正在將 {output_filename} 送往 Document Intelligence...")
+                di_result = analyze_image_with_di(output_filepath, log_callback)
+                if not di_result:
+                    log_callback(f"  - DI 分析失敗或沒有回傳結果، 跳過此頁面 ")
+                    continue
+                
+                log_callback(f"  - DI 分析成功 ")
+                di_content = di_result.get('content', '')
+
+                # --- 步驟 c: 呼叫 ChatGPT Vision API ---
+                log_callback(f"  - 正在組合提示並呼叫 ChatGPT Vision API...")
+                
+                base64_image = image_file_to_base64(output_filepath, log_callback)
+                if not base64_image:
+                    log_callback(f"  - [錯誤] 無法將圖片轉為 Base64، 跳過此頁面 ")
+                    continue
+
+                user_content = [
+                    {"type": "text", "text": user_prompt_template},
+                    {"type": "text", "text": f"\n--- OCRed Text Below ---\n{di_content}"},
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
+                ]
+
+                chatgpt_json = query_chatgpt_vision_api(system_prompt, user_content, log_callback)
+
+                if chatgpt_json:
+                    log_callback(f"  - ChatGPT 分析成功 ")
+                    final_chatgpt_results.append({'page': page_num, 'chatgpt_result': chatgpt_json})
+                else:
+                    log_callback(f"  - ChatGPT 分析失敗或沒有回傳結果 ")
+
+            except Exception as e:
+                log_callback(f"[錯誤] 處理頁面 {page_num} 時失敗: {e}")
+        else:
+            log_callback(f"[警告] 頁碼 {page_num} 超出 PDF 範圍 (總頁數: {len(doc)})، 已略過 ")
+
+    doc.close()
+    return final_chatgpt_results

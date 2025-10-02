@@ -1,0 +1,51 @@
+{
+    "file": {
+        "name": "C41N2503 BSMI Cert.pdf",
+        "category": "BSMI Cert",
+        "page_count": 2
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": 1,
+                "loc": "cropped_image:model_name.png",
+                "quote": "C41N2503"
+            },
+            {
+                "page": 1,
+                "loc": "bbox(top_left, xywh): [493,682,142,28]",
+                "quote": "型　　式：C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "主要語言為中文。僅 model_name 有切圖與整頁證據，其餘欄位在切圖與 hints 搜尋均未獲值。頁碼採絕對 1-based。"
+}

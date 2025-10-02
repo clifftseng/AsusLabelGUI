@@ -1,0 +1,64 @@
+{
+    "file": {
+        "name": "安全测试报告.pdf",
+        "category": null,
+        "page_count": 13
+    },
+    "language": "zh",
+    "model_name": {
+        "value": "C41N2503",
+        "raw_value": "C41N2503",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:model_name.png",
+                "quote": "型号: C41N2503"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6 Vdc",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:nominal_voltage_v.png",
+                "quote": "标称电压: 15.6Vdc"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "typ_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_capacity_mah": {
+        "value": 3082,
+        "raw_value": "3082 mAh",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:rated_capacity_mah.png",
+                "quote": "额定容量: 3082mAh"
+            }
+        ]
+    },
+    "rated_energy_wh": {
+        "value": 48.1,
+        "raw_value": "48.1 Wh",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:rated_energy_wh.png",
+                "quote": "额定能量: 48.1Wh"
+            }
+        ]
+    },
+    "conflicts": [],
+    "notes": "頁碼採絕對 1-based，但切圖未提供 hints.page 故 evidence.page=null。文件主要語言為中文。typical 容量與能量未在圖片中提供，切圖與 hints 搜尋均未獲值。"
+}

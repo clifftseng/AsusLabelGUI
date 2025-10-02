@@ -1,0 +1,64 @@
+{
+    "file": {
+        "name": "Simplo Technology Co Ltd UL Report.pdf",
+        "category": "UL2054 Report",
+        "page_count": null
+    },
+    "language": "en",
+    "model_name": {
+        "value": "20HK2",
+        "raw_value": "20HK2",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:model_name.png",
+                "quote": "Model\n20HK2"
+            }
+        ]
+    },
+    "nominal_voltage_v": {
+        "value": 15.6,
+        "raw_value": "15.6 Vdc",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:nominal_voltage_v.png",
+                "quote": "Voltage (Nominal), Vdc\n15.6"
+            }
+        ]
+    },
+    "typ_batt_capacity_wh": {
+        "value": 64,
+        "raw_value": "64Wh",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:typ_batt_capacity_wh.png",
+                "quote": "Capacity (Nominal), mAh\n4102mAh / 64Wh"
+            }
+        ]
+    },
+    "typ_capacity_mah": {
+        "value": 4102,
+        "raw_value": "4102mAh",
+        "evidence": [
+            {
+                "page": null,
+                "loc": "cropped_image:typ_capacity_mah.png",
+                "quote": "Capacity (Nominal), mAh\n4102mAh / 64Wh"
+            }
+        ]
+    },
+    "rated_capacity_mah": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "rated_energy_wh": {
+        "value": null,
+        "raw_value": null,
+        "evidence": []
+    },
+    "conflicts": [],
+    "notes": "頁碼採絕對 1-based。所有欄位值均來自切圖 OCR，無額定容量與額定能量資訊；typical 容量同時提供 mAh 與 Wh。"
+}
