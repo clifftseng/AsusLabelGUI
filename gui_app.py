@@ -131,17 +131,13 @@ class ToolGUI(tk.Tk):
     def run_async_processing(self):
         try:
             self.log_message("處理程序開始...")
-            self.log_message("正在載入核心處理模組(torch/transformers)，請稍候...")
-            self.update()
-            time.sleep(0.1)
-
             import processing_module
 
             # Clear log before starting the main process messages
             self.log_text.config(state="normal")
             self.log_text.delete('1.0', tk.END)
             self.log_text.config(state="disabled")
-            self.log_message("核心模組載入完畢，開始執行非同步處理流程。")
+            self.log_message("處理程序開始執行非同步處理流程。")
 
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
             self.update_progress(0)

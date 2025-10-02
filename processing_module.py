@@ -71,6 +71,11 @@ async def process_file_worker(filename, selected_options, available_formats, pro
             if mode_to_run:
                 format_path_for_mode = os.path.join(helpers.FORMAT_DIR, f"{found_format_name}.json") if found_format_name else None
                 
+                # If OWL-ViT mode is selected, ensure the model is loaded (it's cached internally)
+                if mode_to_run == mode_owlvit_then_chatgpt:
+                    worker_log_callback("  - 正在載入 OWL-ViT 模型 (首次使用時載入)...")
+                    helpers.get_owlvit_model(worker_log_callback)
+
                 # Add common options
                 execute_options.update({
                     'log_callback': worker_log_callback,
@@ -135,8 +140,6 @@ async def run_processing(selected_options, log_callback, progress_callback):
                 break
         if not owlvit_needed:
             log_callback("  - 本次任務無需使用 OWL-ViT 模型。")
-        if owlvit_needed:
-            helpers.get_owlvit_model(log_callback)
 
         if not helpers.ensure_template_files_exist(log_callback):
             log_callback("[錯誤] Excel 範本檔案準備失敗，處理終止。")

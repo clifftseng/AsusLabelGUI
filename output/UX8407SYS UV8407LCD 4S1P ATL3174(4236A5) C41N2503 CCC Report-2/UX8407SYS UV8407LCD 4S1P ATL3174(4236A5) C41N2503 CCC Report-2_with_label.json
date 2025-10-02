@@ -18,7 +18,7 @@
     },
     "nominal_voltage_v": {
         "value": 15.6,
-        "raw_value": "15.6 Vdc",
+        "raw_value": "15.6Vdc",
         "evidence": [
             {
                 "page": null,
@@ -39,7 +39,7 @@
     },
     "rated_capacity_mah": {
         "value": 3082,
-        "raw_value": "3082 mAh",
+        "raw_value": "3082mAh",
         "evidence": [
             {
                 "page": null,
@@ -50,7 +50,7 @@
     },
     "rated_energy_wh": {
         "value": 48.1,
-        "raw_value": "48.1 Wh",
+        "raw_value": "48.1Wh",
         "evidence": [
             {
                 "page": null,
@@ -60,5 +60,5 @@
         ]
     },
     "conflicts": [],
-    "notes": "頁碼採絕對 1-based，但切圖未提供 hints.page 故 evidence.page=null。文件主要語言為中文。typical 容量與能量未在圖片中提供，切圖與 hints 搜尋均未獲值。"
+    "notes": "頁碼採絕對 1-based。所有欄位值均來自對應切圖，因無 Spec.hints 提供頁碼，故 evidence.page=null。typical 容量與能量文件中未提供，切圖與 hints 搜尋均未獲值。"
 }

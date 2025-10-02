@@ -11,8 +11,8 @@
         "evidence": [
             {
                 "page": 1,
-                "loc": "bbox(top_left, xywh): [256,678,200,28]",
-                "quote": "Model:20HK2"
+                "loc": "bbox(top_left, xywh): [256, 575, 300, 25]",
+                "quote": "Model:20HK2 Rated Capacity:4102mAh, Nominal Energy:64Wh, Limited Charging Voltage:18.04V, Nominal Voltage:15.6V"
             }
         ]
     },
@@ -22,8 +22,8 @@
         "evidence": [
             {
                 "page": 1,
-                "loc": "bbox(top_left, xywh): [256,678,400,28]",
-                "quote": "Nominal Voltage:15.6V"
+                "loc": "bbox(top_left, xywh): [256, 575, 300, 25]",
+                "quote": "Model:20HK2 Rated Capacity:4102mAh, Nominal Energy:64Wh, Limited Charging Voltage:18.04V, Nominal Voltage:15.6V"
             }
         ]
     },
@@ -43,8 +43,8 @@
         "evidence": [
             {
                 "page": 1,
-                "loc": "bbox(top_left, xywh): [256,678,300,28]",
-                "quote": "Rated Capacity:4102mAh"
+                "loc": "bbox(top_left, xywh): [256, 575, 300, 25]",
+                "quote": "Model:20HK2 Rated Capacity:4102mAh, Nominal Energy:64Wh, Limited Charging Voltage:18.04V, Nominal Voltage:15.6V"
             }
         ]
     },
@@ -54,11 +54,11 @@
         "evidence": [
             {
                 "page": 1,
-                "loc": "bbox(top_left, xywh): [256,678,350,28]",
-                "quote": "Nominal Energy:64Wh"
+                "loc": "bbox(top_left, xywh): [256, 575, 300, 25]",
+                "quote": "Model:20HK2 Rated Capacity:4102mAh, Nominal Energy:64Wh, Limited Charging Voltage:18.04V, Nominal Voltage:15.6V"
             }
         ]
     },
     "conflicts": [],
-    "notes": "頁碼採絕對 1-based。文件主要語言為英文，含少量中文。未提供 typical 容量與 typical 電池容量數值，故為 null。"
+    "notes": "頁碼採絕對 1-based。文件主要語言為英文，含少量中文。未提供典型/正常容量與能量，故對應欄位為 null。"
 }

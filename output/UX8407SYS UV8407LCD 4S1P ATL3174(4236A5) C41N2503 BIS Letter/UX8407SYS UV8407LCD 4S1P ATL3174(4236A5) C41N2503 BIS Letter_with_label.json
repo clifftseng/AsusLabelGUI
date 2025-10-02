@@ -7,16 +7,16 @@
     "language": "en",
     "model_name": {
         "value": "C41N2503",
-        "raw_value": "Brand -> ASUS, Models -> C41N2503",
+        "raw_value": "C41N2503",
         "evidence": [
             {
                 "page": 1,
-                "loc": "bbox(top_left, xywh): [0,0,317,49]",
+                "loc": "cropped_image:model_name.png",
                 "quote": "[Brand -> ASUS, Models -> C41N2503]"
             },
             {
                 "page": 1,
-                "loc": "bbox(top_left, xywh): [256,492,512,22]",
+                "loc": "bbox(top_left, xywh): [131,678,503,28]",
                 "quote": "[Brand -> ASUS, Models -> C41N2503]"
             }
         ]
@@ -47,5 +47,5 @@
         "evidence": []
     },
     "conflicts": [],
-    "notes": "頁碼採絕對 1-based。本文件僅提供型號資訊，未出現電壓、容量或能量數據；切圖與 hints 搜尋均未獲值。"
+    "notes": "頁碼採絕對 1-based。本文件僅提供型號資訊，未出現電壓、容量或能量數值；切圖與 hints 搜尋均未獲值。主要語言為英文。"
 }
