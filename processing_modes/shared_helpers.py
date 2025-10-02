@@ -19,8 +19,39 @@ from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from pathlib import Path
 
+# --- PyInstaller Pathing Helpers ---
+
+def get_base_path():
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    if getattr(sys, 'frozen', False):
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        # We need the path to the executable file
+        return os.path.dirname(sys.executable)
+    else:
+        # Not in a PyInstaller bundle
+        # os.path.abspath(".") gives the CWD
+        return os.path.abspath(".")
+
+def resource_path(relative_path):
+    """ Get absolute path to a resource that is bundled with the app """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # Not in a PyInstaller bundle, use the ref folder relative to this script
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ref"))
+        # In dev mode, our structure is different, so we adjust.
+        # The original code was BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # and REF_DIR was os.path.join(BASE_DIR, "ref"). So we find the project root.
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base_path = os.path.join(project_root) # In dev, resource_path will point to project root
+
+    return os.path.join(base_path, relative_path)
+
+
 # --- Configuration ---
-load_dotenv()
+load_dotenv(os.path.join(get_base_path(), '.env')) # Load .env from the exe's directory
+
 # OpenAI
 AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
@@ -31,17 +62,22 @@ DI_ENDPOINT = os.environ.get("DOCUMENT_INTELLIGENCE_ENDPOINT")
 DI_KEY = os.environ.get("DOCUMENT_INTELLIGENCE_KEY")
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-USER_INPUT_DIR = os.path.join(BASE_DIR, "input")
-OUTPUT_DIR = os.path.join(BASE_DIR, "output")
-PROMPT_DIR = os.path.join(BASE_DIR, "prompt")
-FORMAT_DIR = os.path.join(BASE_DIR, "format")
-EXCEL_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "excel")
-REF_DIR = os.path.join(BASE_DIR, "ref")
-SINGLE_TEMPLATE_PATH = os.path.join(REF_DIR, "single.xlsx")
-TOTAL_TEMPLATE_PATH = os.path.join(REF_DIR, "total.xlsx")
+# --- Dynamic Path Definitions ---
+BASE_PATH = get_base_path()
 
-MODEL_DIR = os.path.join(BASE_DIR, "model")
+# External directories (relative to the executable)
+USER_INPUT_DIR = os.path.join(BASE_PATH, "input")
+OUTPUT_DIR = os.path.join(BASE_PATH, "output")
+PROMPT_DIR = os.path.join(BASE_PATH, "prompt")
+FORMAT_DIR = os.path.join(BASE_PATH, "format")
+MODEL_DIR = os.path.join(BASE_PATH, "model")
+EXCEL_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "excel")
+
+# Bundled resource files (inside the executable)
+# We point to the 'ref' folder which will be bundled.
+SINGLE_TEMPLATE_PATH = resource_path(os.path.join("ref", "single.xlsx"))
+TOTAL_TEMPLATE_PATH = resource_path(os.path.join("ref", "total.xlsx"))
+
 
 # --- Model & Client Cache ---
 CACHE = {}

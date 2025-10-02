@@ -1,6 +1,6 @@
 {
     "file": {
-        "name": "Simplo Technology Co Ltd UL2054 Report.pdf",
+        "name": "Simplo Technology Co Ltd UL Report.pdf",
         "category": "UL2054 Report",
         "page_count": null
     },
@@ -12,7 +12,7 @@
             {
                 "page": null,
                 "loc": "cropped_image:model_name.png",
-                "quote": "20HK2"
+                "quote": "Model\n20HK2"
             }
         ]
     },
@@ -23,7 +23,7 @@
             {
                 "page": null,
                 "loc": "cropped_image:nominal_voltage_v.png",
-                "quote": "15.6"
+                "quote": "Voltage (Nominal), Vdc\n15.6"
             }
         ]
     },
@@ -34,7 +34,7 @@
             {
                 "page": null,
                 "loc": "cropped_image:typ_batt_capacity_wh.png",
-                "quote": "4102mAh / 64Wh"
+                "quote": "Capacity (Nominal), mAh\n4102mAh / 64Wh"
             }
         ]
     },
@@ -45,7 +45,7 @@
             {
                 "page": null,
                 "loc": "cropped_image:typ_capacity_mah.png",
-                "quote": "4102mAh / 64Wh"
+                "quote": "Capacity (Nominal), mAh\n4102mAh / 64Wh"
             }
         ]
     },
@@ -60,5 +60,5 @@
         "evidence": []
     },
     "conflicts": [],
-    "notes": "頁碼採絕對 1-based。所有欄位值均來自切圖，無額定容量與額定能量資訊；切圖與 hints 搜尋均未獲 rated 欄位值。"
+    "notes": "頁碼採絕對 1-based。所有欄位值均來自切圖 OCR，未提供 hints.page 故 evidence.page=null。文件僅提供 nominal（typical）容量與電壓，未提供額定容量與額定能量。"
 }

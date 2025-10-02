@@ -142,7 +142,9 @@ class ToolGUI(tk.Tk):
             self.after(0, lambda: self.result_indicator.config(bg="grey"))
             self.update_progress(0)
 
-            input_dir = "input"
+            # 使用 processing_modes.shared_helpers 中的 BASE_PATH 來確保路徑正確
+            from processing_modes.shared_helpers import BASE_PATH
+            input_dir = os.path.join(BASE_PATH, "input")
             if not os.path.exists(input_dir):
                 os.makedirs(input_dir)
                 self.log_message(f"'{input_dir}' 資料夾不存在，已自動建立。")

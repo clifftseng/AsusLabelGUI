@@ -1,6 +1,6 @@
 {
     "file": {
-        "name": "BSMI Cert.pdf",
+        "name": "20HK2 BSMI Cert.pdf",
         "category": "BSMI Cert",
         "page_count": 1
     },
@@ -12,7 +12,7 @@
             {
                 "page": 1,
                 "loc": "cropped_image:model_name.png",
-                "quote": "型式: 20HK2"
+                "quote": "型式：20HK2"
             }
         ]
     },
@@ -42,5 +42,5 @@
         "evidence": []
     },
     "conflicts": [],
-    "notes": "主要語言為中文。僅 model_name 有切圖且成功辨識，其他欄位在切圖與 hints 搜尋均未獲值。頁碼採絕對 1-based。"
+    "notes": "主要語言為中文。僅 model_name 有切圖並成功辨識，其餘欄位在切圖與文件中均未找到數值。頁碼採絕對 1-based。"
 }
