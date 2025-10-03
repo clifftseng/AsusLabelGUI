@@ -111,9 +111,34 @@ async def _query_openai_with_retry(log_callback, **kwargs):
     log_callback(f"    [錯誤] 達到最大重試次數後 API 呼叫失敗")
     return None
 
-async def query_chatgpt_text_api(system_prompt, user_prompt, log_callback):
+async def query_chatgpt_text_api(system_prompt, user_prompt, log_callback, output_dir, file_stem, page_num=None):
     log_callback("  - [ChatGPT] 正在發送純文字請求...")
+    
+    # Save prompt
+    prompt_filename = f"{file_stem}_page_{page_num}_text_prompt.txt" if page_num else f"{file_stem}_text_prompt.txt"
+    prompt_filepath = output_dir / prompt_filename
+    try:
+        with open(prompt_filepath, 'w', encoding='utf-8') as f:
+            f.write(f"System Prompt:\n{system_prompt}\n\nUser Prompt:\n{user_prompt}")
+        log_callback(f"    - 已儲存 Prompt: {prompt_filename}")
+    except Exception as e:
+        log_callback(f"    - [錯誤] 儲存 Prompt 失敗: {e}")
+
     response = await _query_openai_with_retry(log_callback=log_callback, model=get_azure_openai_deployment(), messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}], max_tokens=512, temperature=0.0, response_format={"type": "json_object"})
+    
+    # Save raw response
+    response_filename = f"{file_stem}_page_{page_num}_text_response.json" if page_num else f"{file_stem}_text_response.json"
+    response_filepath = output_dir / response_filename
+    try:
+        if response:
+            with open(response_filepath, 'w', encoding='utf-8') as f:
+                json.dump(response.model_dump(), f, ensure_ascii=False, indent=4)
+            log_callback(f"    - 已儲存原始回應: {response_filename}")
+        else:
+            log_callback(f"    - 未收到有效回應，未儲存原始回應檔案: {response_filename}")
+    except Exception as e:
+        log_callback(f"    - [錯誤] 儲存原始回應失敗: {e}")
+
     if response:
         try:
             return json.loads(response.choices[0].message.content)
@@ -122,7 +147,7 @@ async def query_chatgpt_text_api(system_prompt, user_prompt, log_callback):
             return None
     return None
 
-async def predict_relevant_pages(pdf_path, log_callback):
+async def predict_relevant_pages(pdf_path, log_callback, output_dir):
     log_callback("  - 開始使用 ChatGPT 預測相關頁面...")
     try:
         with fitz.open(pdf_path) as doc: total_pages = len(doc)
@@ -133,7 +158,10 @@ async def predict_relevant_pages(pdf_path, log_callback):
             return None
         system_prompt = prompt_template.replace("{TOTAL_PAGES}", str(total_pages)).replace("{TARGET_FIELDS}", "\n".join(sorted(target_fields)))
         user_prompt = "Please provide the JSON object with the most likely pages based on the system prompt."
-        response_json = await query_chatgpt_text_api(system_prompt, user_prompt, log_callback)
+        
+        file_stem = pdf_path.stem
+        response_json = await query_chatgpt_text_api(system_prompt, user_prompt, log_callback, output_dir, file_stem, page_num="prediction")
+        
         if not isinstance(response_json, dict): 
             log_callback("  - [警告] ChatGPT 沒有回傳有效的 JSON 物件用於頁面預測。")
             return None
@@ -172,9 +200,36 @@ def image_file_to_base64(image_path, log_callback):
         log_callback(f"錯誤：讀取或編碼圖片檔案 '{Path(image_path).name}' 時發生錯誤: {e}")
         return None
 
-async def query_chatgpt_vision_api(system_prompt, user_content, log_callback):
+async def query_chatgpt_vision_api(system_prompt, user_content, log_callback, output_dir, file_stem, page_num, field=None):
     log_callback("  - 正在發送 Vision API 請求...")
+
+    # Save prompt
+    prompt_filename = f"{file_stem}_page_{page_num}_vision_prompt.txt"
+    if field: prompt_filename = f"{file_stem}_page_{page_num}_field_{field}_vision_prompt.txt"
+    prompt_filepath = output_dir / prompt_filename
+    try:
+        with open(prompt_filepath, 'w', encoding='utf-8') as f:
+            f.write(f"System Prompt:\n{system_prompt}\n\nUser Content:\n{json.dumps(user_content, ensure_ascii=False, indent=4)}")
+        log_callback(f"    - 已儲存 Prompt: {prompt_filename}")
+    except Exception as e:
+        log_callback(f"    - [錯誤] 儲存 Prompt 失敗: {e}")
+
     response = await _query_openai_with_retry(log_callback=log_callback, model=get_azure_openai_deployment(), messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_content}], max_tokens=4096, temperature=0.1, top_p=0.95, response_format={"type": "json_object"})
+
+    # Save raw response
+    response_filename = f"{file_stem}_page_{page_num}_vision_response.json"
+    if field: response_filename = f"{file_stem}_page_{page_num}_field_{field}_vision_response.json"
+    response_filepath = output_dir / response_filename
+    try:
+        if response:
+            with open(response_filepath, 'w', encoding='utf-8') as f:
+                json.dump(response.model_dump(), f, ensure_ascii=False, indent=4)
+            log_callback(f"    - 已儲存原始回應: {response_filename}")
+        else:
+            log_callback(f"    - 未收到有效回應，未儲存原始回應檔案: {response_filename}")
+    except Exception as e:
+        log_callback(f"    - [錯誤] 儲存原始回應失敗: {e}")
+
     if response:
         try: return json.loads(response.choices[0].message.content)
         except (json.JSONDecodeError, IndexError, KeyError) as e:
@@ -221,16 +276,10 @@ async def process_pages_via_screenshot_di_chatgpt(pdf_path, pages_to_process, ou
             user_prompt = user_prompt_template.replace("<檔名含副檔名>", pdf_path.name).replace("<整數>", str(len(doc)))
             user_content = [{"type": "text", "text": user_prompt}, {"type": "text", "text": f"\n--- OCRed Text Below ---\n{di_content}"}, {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}]
             log_callback(f"  - 正在組合提示並呼叫 ChatGPT Vision API...")
-            chatgpt_json = await query_chatgpt_vision_api(system_prompt, user_content, log_callback)
+            chatgpt_json = await query_chatgpt_vision_api(system_prompt, user_content, log_callback, output_dir, pdf_stem, page_num)
             if chatgpt_json:
                 log_callback(f"  - ChatGPT 分析成功。")
                 final_chatgpt_results.append({'page': page_num, 'chatgpt_result': chatgpt_json})
-                json_output_filename = f"{pdf_stem}_page_{page_num}_chatgpt_result.json"
-                try:
-                    with open(output_dir / json_output_filename, 'w', encoding='utf-8') as f: json.dump(chatgpt_json, f, ensure_ascii=False, indent=4)
-                    log_callback(f"  - 已儲存單頁分析結果: {json_output_filename}")
-                except Exception as e:
-                    log_callback(f"  - [錯誤] 儲存 JSON 結果時失敗: {e}")
             else:
                 log_callback(f"  - ChatGPT 分析失敗或沒有回傳結果。")
         except Exception as e:
@@ -304,7 +353,7 @@ async def process_mode_a_helper(pdf_path, hints, output_dir, log_callback):
                 try:
                     # --- Crop Image ---
                     with Image.open(full_page_filepath) as img:
-                        # bbox is [x, y, width, height]. Convert to (left, upper, right, lower) for Pillow.
+                        # bbox is [x, y, width, height]. Convert to (left, upper, right, lower) for Pillow. 
                         x, y, w, h = bbox
                         crop_box = (x, y, x + w, y + h)
                         cropped_img = img.crop(crop_box)
@@ -338,19 +387,11 @@ async def process_mode_a_helper(pdf_path, hints, output_dir, log_callback):
                         }
                     ]
 
-                    chatgpt_json = await query_chatgpt_vision_api(system_prompt, user_content, log_callback)
+                    chatgpt_json = await query_chatgpt_vision_api(system_prompt, user_content, log_callback, output_dir, pdf_stem, page_num, field)
 
                     if chatgpt_json:
                         log_callback(f"    - ChatGPT 分析成功 (欄位: {field})。")
                         final_chatgpt_results.append({'page': page_num, 'field': field, 'chatgpt_result': chatgpt_json})
-                        
-                        json_output_filename = f"{pdf_stem}_page_{page_num}_field_{field}_chatgpt_result.json"
-                        try:
-                            with open(output_dir / json_output_filename, 'w', encoding='utf-8') as f:
-                                json.dump(chatgpt_json, f, ensure_ascii=False, indent=4)
-                            log_callback(f"    - 已儲存單一欄位分析結果: {json_output_filename}")
-                        except Exception as e:
-                            log_callback(f"    - [錯誤] 儲存 JSON 結果時失敗: {e}")
                     else:
                         log_callback(f"    - ChatGPT 分析失敗 (欄位: {field})。")
 
@@ -362,7 +403,6 @@ async def process_mode_a_helper(pdf_path, hints, output_dir, log_callback):
 
     doc.close()
     return final_chatgpt_results
-
 # --- Excel Helper Functions ---
 def ensure_template_files_exist(log_callback):
     EXCEL_OUTPUT_DIR.mkdir(exist_ok=True)

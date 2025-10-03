@@ -1,6 +1,7 @@
 import asyncio
 import os
 import json
+import shutil
 from pathlib import Path
 import shared_helpers as helpers # <-- Use helpers
 
@@ -55,7 +56,7 @@ async def process_mode_b(pdf_path, log_callback):
     pdf_output_dir.mkdir(exist_ok=True)
 
     # 1. Predict relevant pages
-    predicted_pages = await helpers.predict_relevant_pages(pdf_path, log_callback)
+    predicted_pages = await helpers.predict_relevant_pages(pdf_path, log_callback, pdf_output_dir)
 
     if not predicted_pages:
         log_callback(f"[模式 B] AI 未能為檔案 {pdf_path.name} 建議任何頁面，處理結束。")
@@ -78,10 +79,17 @@ async def run_processing(selected_options, log_callback, progress_callback):
     log_callback("開始掃描 input 資料夾...")
 
     # Ensure required directories exist
-    for dir_path in [INPUT_DIR, FORMAT_DIR, OUTPUT_DIR]:
+    for dir_path in [INPUT_DIR, FORMAT_DIR]:
         if not dir_path.exists():
             dir_path.mkdir(parents=True)
             log_callback(f"已建立必要的資料夾: {dir_path}")
+
+    # Clear and recreate OUTPUT_DIR for fresh results
+    if OUTPUT_DIR.exists():
+        shutil.rmtree(OUTPUT_DIR)
+        log_callback(f"已清空舊的輸出資料夾: {OUTPUT_DIR}")
+    OUTPUT_DIR.mkdir(parents=True)
+    log_callback(f"已建立新的輸出資料夾: {OUTPUT_DIR}")
 
     pdf_files = list(INPUT_DIR.glob("*.pdf"))
 
