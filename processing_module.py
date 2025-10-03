@@ -3,7 +3,10 @@ import os
 import json
 import shutil
 from pathlib import Path
-import shared_helpers as helpers # <-- Use helpers
+
+import processing_helpers
+import api_helpers
+import excel_helpers
 
 # Define base directories relative to this script file.
 BASE_DIR = Path(__file__).resolve().parent
@@ -37,7 +40,7 @@ async def process_mode_a(pdf_path, format_name, log_callback):
 
     log_callback(f"從 {format_file_path.name} 中找到 {len(hints)} 個提示，開始進行分析...")
     
-    results = await helpers.process_mode_a_helper(
+    results = await processing_helpers.process_mode_a_helper(
         pdf_path=pdf_path,
         hints=hints,
         output_dir=pdf_output_dir,
@@ -56,7 +59,7 @@ async def process_mode_b(pdf_path, log_callback):
     pdf_output_dir.mkdir(exist_ok=True)
 
     # 1. Predict relevant pages
-    predicted_pages = await helpers.predict_relevant_pages(pdf_path, log_callback, pdf_output_dir)
+    predicted_pages = await api_helpers.predict_relevant_pages(pdf_path, log_callback, pdf_output_dir)
 
     if not predicted_pages:
         log_callback(f"[模式 B] AI 未能為檔案 {pdf_path.name} 建議任何頁面，處理結束。")
@@ -64,7 +67,7 @@ async def process_mode_b(pdf_path, log_callback):
 
     # 2. Process the predicted pages
     log_callback(f"[模式 B] AI 為檔案 {pdf_path.name} 建議頁面為 {predicted_pages}，開始進行分析...")
-    results = await helpers.process_pages_via_screenshot_di_chatgpt(
+    results = await processing_helpers.process_pages_via_screenshot_di_chatgpt(
         pdf_path=pdf_path,
         pages_to_process=predicted_pages,
         output_dir=pdf_output_dir, # Pass the dedicated directory
@@ -136,14 +139,14 @@ async def run_processing(selected_options, log_callback, progress_callback):
         log_callback("[警告] 沒有任何處理結果可供儲存。")
         return None
 
-    if not helpers.ensure_template_files_exist(log_callback):
+    if not excel_helpers.ensure_template_files_exist(log_callback):
         log_callback("[錯誤] Excel 範本檔案不存在，無法儲存結果。")
         return None
 
-    total_excel_path = helpers.save_total_excel(all_results, log_callback)
+    total_excel_path = excel_helpers.save_total_excel(all_results, log_callback)
 
     if total_excel_path:
-        helpers.apply_highlighting_rules(total_excel_path, log_callback)
+        excel_helpers.apply_highlighting_rules(total_excel_path, log_callback)
         log_callback(f"處理完畢！結果已儲存至: {total_excel_path}")
         return str(total_excel_path)
     else:
